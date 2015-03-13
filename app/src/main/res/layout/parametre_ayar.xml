@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1"
+    android:dividerPadding="@dimen/Ekran_padding"
+    android:focusable="false"
+    android:focusableInTouchMode="false"
+    android:id="@+id/LinearLayout"
+    android:padding="@dimen/Ekran_padding">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Güncelleme Periyodu (ms):"
+        android:id="@+id/tvlblGuncellemePeriyodu" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/etGuncellemePeriyodu"
+        android:inputType="numberSigned"
+        android:text="10000" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Server Url:"
+        android:id="@+id/tvlblServerURL"
+        android:layout_gravity="center_horizontal" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/etServerUrl"
+        android:layout_gravity="center_horizontal"
+        android:text="mk-onurerden.rhcloud.com"
+        android:inputType="textUri|text" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Cihaz ID"
+        android:id="@+id/tvCihazId" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/etcihazId"
+        android:inputType="numberSigned"
+        android:text="-1" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Doğruluk (m):"
+        android:id="@+id/tvAccuarcy" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/etAccuarcy"
+        android:inputType="numberSigned"
+        android:text="20" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="GPS Periyodu (ms)"
+        android:id="@+id/tvGPSPeriod" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/etGPSPeriod"
+        android:text="9000"
+        android:inputType="numberSigned" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:id="@+id/wifiCheckBox"
+        android:text="WiFi bağlantısına izin ver"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:checked="false"
+        android:height="20dp" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:id="@+id/rotaSecenegi"
+        android:text="RotaID her aktivitede yenilensin "
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:checked="false"
+        android:height="20dp" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="117dp"
+        android:layout_height="15dp"
+        android:text="Kaydet"
+        android:id="@+id/btnKaydet"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="0.26"
+        android:onClick="kaydet" />
+
+</LinearLayout>

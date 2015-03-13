@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">FollowMe</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Ayarlar</string>
+    <string name="settings">Ayarlar</string>
+    <string name="title_activity_init">Baglantıları Hazırla</string>
+    <string name="GPSService">GPS Servisi</string>
+    <string name="title_activity_init2">Init2</string>
+    <string name="title_activity_swipe">Swipe</string>
+    <string name="action_swipe">Sürükle</string>
+
+</resources>
