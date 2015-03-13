@@ -15,7 +15,6 @@ public class JSONProvider<T>  {
 
     Gson gson = new Gson();
 
-
     public String entityToJson(T entity) {
 
         String s = gson.toJson(entity);
