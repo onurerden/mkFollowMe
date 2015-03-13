@@ -12,7 +12,6 @@ import java.util.List;
  * Created by asay on 23.12.2014.
  */
 public class JSONProvider<T>  {
-    ////
 
     Gson gson = new Gson();
 
