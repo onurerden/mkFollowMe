@@ -6,14 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
-import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Environment;
+import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,6 +49,7 @@ public class MainActivity extends ActionBarActivity{
     IDeviceServerImpl ids;
     Handler mHandler = new Handler();
     private static long back_pressed;
+    Konus konusucu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +59,7 @@ public class MainActivity extends ActionBarActivity{
 
         sp = new SharedPrefBilgisi(MainActivity.this); //SharedPref ten okuyan ve oraya yazan Class'ın hazırlanması
         ids = new IDeviceServerImpl();
+        konusucu =new Konus(MainActivity.this);
 
         //GPSTracker ile konum alınıyor, Bunu servis olarak başlatmak gerekiyor(muş)!!!
         intentGPSTracker = new Intent(this, GPSTracker.class);
@@ -96,6 +96,9 @@ public class MainActivity extends ActionBarActivity{
                         gps.baslat(sp.GPSupdatePeriodmilisGetir()); // GPS provider update leri durmuş ise tekrar başlat
 
                         _tvStatus.setText("BAĞLANTI HAZIR");
+                        konusucu.tekTrackCal(R.raw.all_ready);
+
+
                         if (routeId==0 || sp.rotaSecenegiGetir()){routeId=ids.getRouteId(sp.cihazIdGetir());}
                         tvRota.setText("ROTA:"+routeId);
                         try{
@@ -107,6 +110,8 @@ public class MainActivity extends ActionBarActivity{
                     } else {
                         swAktivasyon.setChecked(false);
                         _tvStatus.setText("BAĞLANTI HAZIR DEĞİL");
+                        konusucu.tekTrackCal(R.raw.all_ready);
+
                         Init2 init = new Init2();
                         Intent tetik = new Intent(MainActivity.this, init.getClass());
                         startActivity(tetik);
@@ -127,6 +132,8 @@ public class MainActivity extends ActionBarActivity{
                     _tvHiz.setText("---");
                     _tvStatus.clearAnimation();
                     _tvStatus.setText("GÖNDERİM DURDURULDU");
+                    konusucu.tekTrackCal(R.raw.all_ready);
+
                     tvRota.setText("---");
                     gps.durdur(); // gps update lerini durdur
                 }
@@ -165,6 +172,8 @@ public class MainActivity extends ActionBarActivity{
 
                 if (!gps.gpsKilitlendiMi()) {  //(gps.location.getAccuracy() > 0.01) && (gps.location.getAccuracy() < 5)
                     _tvStatus.setText("GPS ARANIYOR");
+                    konusucu.tekTrackCal(R.raw.searching);
+
                     if (_tvStatus.getVisibility()==View.VISIBLE){_tvStatus.setVisibility(View.INVISIBLE);} else {_tvStatus.setVisibility(View.VISIBLE);}
                 }
                 else {

@@ -57,8 +57,6 @@ try {
     public void onLocationChanged(Location loc) {
         gpsKilitlendiMi =true;
         location= loc;
-        //location.setLatitude(loc.getLatitude());
-        //location.setLongitude(loc.getLongitude());
     }
 
     @Override
@@ -72,7 +70,6 @@ if (status != LocationProvider.AVAILABLE){
         //int x = extras.getInt("satellites");
        // Toast.makeText(getApplicationContext(),"Uydu Sayısı:"+x,Toast.LENGTH_SHORT).show();
 */
-
     }
 
     @Override
@@ -106,8 +103,6 @@ if (status != LocationProvider.AVAILABLE){
     public boolean gpsKilitlendiMi(){
         return this.gpsKilitlendiMi;
     }
-
-
 
     @Override
     public IBinder onBind(final Intent intent) {

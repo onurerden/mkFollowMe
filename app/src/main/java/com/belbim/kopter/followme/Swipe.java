@@ -1,7 +1,6 @@
 package com.belbim.kopter.followme;
 
 import android.app.Activity;
-import android.gesture.GestureOverlayView;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,6 +19,7 @@ public class Swipe extends Activity {
     double actionNewPosition=0;
     RelativeLayout mRelativeMain;
     RelativeLayout.LayoutParams iVParams;
+    Konus konusucu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +30,7 @@ public class Swipe extends Activity {
         mRelativeMain = (RelativeLayout) findViewById(R.id.RelativeMain);
         iVParams= (RelativeLayout.LayoutParams)m_ivImage.getLayoutParams();
         imageWidth = m_ivImage.getWidth();
+        konusucu = new Konus(this);
     }
 
     View.OnTouchListener m_onTouchListener = new View.OnTouchListener(){
@@ -48,11 +49,15 @@ public class Swipe extends Activity {
                     if (m_posX>mRelativeMain.getWidth()/2){
                         iVParams.setMargins(maxImageX,0,0,0);
                         m_ivImage.setImageResource(R.drawable.swipe_left);
+                        konusucu.tekTrackCal(R.raw.searching);
+
                     }
 
                     if (m_posX<mRelativeMain.getWidth()/2 ){
                         iVParams.setMargins(0,0,0,0);
                         m_ivImage.setImageResource(R.drawable.swipe_right);
+                        konusucu.tekTrackCal(R.raw.all_ready);
+
                     }
                     break;
 
