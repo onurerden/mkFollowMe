@@ -1,6 +1,8 @@
 package com.belbim.kopter.followme;
 
 import android.app.Activity;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -46,11 +48,15 @@ public class Swipe extends Activity {
                     break;
 
                 case MotionEvent.ACTION_UP:
+                    MediaPlayer mMediaPlayer = new MediaPlayer();
+                    mMediaPlayer.create(Swipe.this,R.raw.all_ready);
+                    mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                    mMediaPlayer.start();
+
                     if (m_posX>mRelativeMain.getWidth()/2){
                         iVParams.setMargins(maxImageX,0,0,0);
                         m_ivImage.setImageResource(R.drawable.swipe_left);
                         konusucu.tekTrackCal(R.raw.searching);
-
                     }
 
                     if (m_posX<mRelativeMain.getWidth()/2 ){

@@ -17,6 +17,7 @@ public class ParametreAyar extends Activity {
     EditText _etCihazId;
     EditText etAccuarcy;
     EditText etGPSPeriod;
+    EditText etKullaniciAdi;
     SharedPrefBilgisi sp;
     CheckBox wifiCheckBox;
     CheckBox rotaSecenegi;
@@ -32,9 +33,11 @@ public class ParametreAyar extends Activity {
         _etGuncellemePeriyodu = (EditText) findViewById(R.id.etGuncellemePeriyodu);
         _etCihazId=(EditText) findViewById(R.id.etcihazId);
         etAccuarcy=(EditText) findViewById(R.id.etAccuarcy);
+
         wifiCheckBox= (CheckBox) findViewById(R.id.wifiCheckBox);
         rotaSecenegi= (CheckBox) findViewById(R.id.rotaSecenegi);
         etGPSPeriod=(EditText) findViewById(R.id.etGPSPeriod);
+        etKullaniciAdi= (EditText) findViewById(R.id.etKullaniciAdi);
 
         _etServerURL.setText(sp.serverUrlGetir());
         _etGuncellemePeriyodu.setText(""+sp.guncellemePeriyoduGetir());
@@ -43,17 +46,20 @@ public class ParametreAyar extends Activity {
         etGPSPeriod.setText(""+sp.GPSupdatePeriodmilisGetir());
         wifiCheckBox.setChecked(sp.wifiCheckGetir());
         rotaSecenegi.setChecked(sp.rotaSecenegiGetir());
+        etKullaniciAdi.setText(sp.kullaniciAdiGetir());
+
     }
 
     public void kaydet(View view) {
         sp.serverUrlYaz(_etServerURL.getText().toString());
-        if (Integer.parseInt(_etGuncellemePeriyodu.getText().toString())>0 && Integer.parseInt(_etCihazId.getText().toString())>0 && Integer.parseInt(etAccuarcy.getText().toString())>0 && Integer.parseInt(etGPSPeriod.getText().toString())>1000) {
+        if (Integer.parseInt(_etGuncellemePeriyodu.getText().toString())>0 && Integer.parseInt(_etCihazId.getText().toString())>0 && Integer.parseInt(etAccuarcy.getText().toString())>0 && Integer.parseInt(etGPSPeriod.getText().toString())>1000 && etKullaniciAdi.getText().length()>5) {
             sp.guncellemePeriyoduYaz(Integer.parseInt(_etGuncellemePeriyodu.getText().toString()));
             sp.cihazIdYaz(Integer.parseInt(_etCihazId.getText().toString()));
             sp.accuarcyYaz((Integer.parseInt(etAccuarcy.getText().toString())));
             sp.wifiCheckYaz(wifiCheckBox.isChecked());
             sp.GPSupdatePeriodmilisYaz(Integer.parseInt(etGPSPeriod.getText().toString()));
             sp.rotaSecenegiYaz(rotaSecenegi.isChecked());
+            sp.kullaniciAdiYaz(etKullaniciAdi.getText().toString());
             finish();
         }
         else {

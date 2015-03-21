@@ -4,194 +4,41 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.belbim.kopter.followme.Init"
     android:layout_width="wrap_content"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
-    android:id="@+id/InitLayout">
+    android:id="@+id/InitLayout"
+    android:padding="20dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="BAGLANTI DURUMU KONTROLÜ"
-        android:id="@+id/tvlbl1"
+        android:text="Giriş Yapabilmek İçin Kullanıcı Adı Belirleyiniz! (Min 6 karakter) "
+        android:id="@+id/tvlbl"
         android:layout_gravity="top|center_horizontal"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
         android:layout_column="0" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/etKullaniciAdi1"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/tvlbl"
+        android:layout_marginTop="20dp" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="DEVAM"
-        android:id="@+id/button"
-        android:onClick="devamEt"
-        android:outlineProvider="background"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_column="0" />
+        android:text="Kaydet"
+        android:id="@+id/btnKaydet"
+        android:padding="10dp"
+        android:layout_below="@+id/etKullaniciAdi1"
+        android:layout_alignStart="@+id/etKullaniciAdi1"
+        android:layout_marginTop="20dp"
+        android:onClick="kaydetKullanici" />
 
-    <TableLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@+id/tvlbl1"
-        android:layout_alignRight="@+id/tvlbl1"
-        android:layout_alignEnd="@+id/tvlbl1"
-        android:layout_alignLeft="@+id/tvlbl1"
-        android:layout_alignStart="@+id/tvlbl1"
-        android:id="@+id/tableLayout"
-        android:layout_above="@+id/button">
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
-
-            <ImageView
-                android:layout_width="@dimen/image_size"
-                android:layout_height="@dimen/image_size"
-                android:id="@+id/imageView"
-                android:layout_alignTop="@+id/tvWifi"
-                android:layout_toEndOf="@+id/tvMobilAgBaglanti"
-                android:layout_alignBottom="@+id/ivMobilAg"
-                android:layout_toRightOf="@+id/tvMobilAgBaglanti"
-                android:layout_column="0" />
-
-            <TextView
-                android:layout_width="@dimen/image_size"
-                android:layout_height="@dimen/image_size"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Wifi"
-                android:id="@+id/tvWifi"
-                android:layout_below="@+id/tvlbl1"
-                android:layout_centerHorizontal="true"
-                android:layout_column="1" />
-
-            <ImageView
-                android:layout_width="@dimen/image_size"
-                android:layout_height="@dimen/image_size"
-                android:id="@+id/ivWifi"
-                android:layout_alignTop="@+id/tvWifi"
-                android:layout_toEndOf="@+id/tvMobilAgBaglanti"
-                android:layout_alignBottom="@+id/ivMobilAg"
-                android:layout_toRightOf="@+id/tvMobilAgBaglanti"
-                android:layout_column="2" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Mobil Ağ"
-                android:id="@+id/tvMobilAg"
-                android:layout_below="@+id/tvWifi"
-                android:layout_centerHorizontal="true"
-                android:layout_column="1" />
-
-            <ImageView
-                android:layout_width="@dimen/image_size"
-                android:layout_height="@dimen/image_size"
-                android:id="@+id/ivMobilAg"
-                android:layout_above="@+id/tvMobilAgBaglanti"
-                android:layout_toRightOf="@+id/tvMobilAgBaglanti"
-                android:layout_toEndOf="@+id/tvMobilAgBaglanti"
-                android:layout_column="2" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Mobil Ağ Bağlantı"
-                android:id="@+id/tvMobilAgBaglanti"
-                android:layout_below="@+id/tvMobilAg"
-                android:layout_centerHorizontal="true"
-                android:layout_column="1" />
-
-            <ImageView
-                android:layout_width="@dimen/image_size"
-                android:layout_height="@dimen/image_size"
-                android:id="@+id/ivMobilAgBaglanti"
-                android:layout_alignTop="@+id/tvMobilAgBaglanti"
-                android:layout_toRightOf="@+id/tvMobilAgBaglanti"
-                android:layout_toEndOf="@+id/tvMobilAgBaglanti"
-                android:layout_column="2" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="EDGE / 3G"
-                android:id="@+id/tvMobileEdgeOr3G"
-                android:layout_below="@+id/tvMobilAgBaglanti"
-                android:layout_centerHorizontal="true"
-                android:layout_column="1" />
-
-            <ImageView
-                android:layout_width="@dimen/image_size"
-                android:layout_height="@dimen/image_size"
-                android:id="@+id/ivMobileEdgeOr3G"
-                android:layout_alignTop="@+id/tvMobileEdgeOr3G"
-                android:layout_toRightOf="@+id/tvMobilAgBaglanti"
-                android:layout_toEndOf="@+id/tvMobilAgBaglanti"
-                android:layout_column="2" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Sunucu Kayıt"
-                android:id="@+id/tvServerKayit"
-                android:layout_column="1" />
-
-            <ImageView
-                android:layout_width="@dimen/image_size"
-                android:layout_height="@dimen/image_size"
-                android:id="@+id/ivServerKayit"
-                android:layout_column="2" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Sunucu Girişi"
-                android:id="@+id/tvDokunus"
-                android:layout_column="1" />
-
-            <ImageView
-                android:layout_width="@dimen/image_size"
-                android:layout_height="@dimen/image_size"
-                android:id="@+id/ivDokunus"
-                android:layout_column="2" />
-        </TableRow>
-
-    </TableLayout>
 </RelativeLayout>
 

@@ -116,7 +116,7 @@ public class Init2 extends Activity {
                     Alarm alarm = new Alarm("Sunucu Bağlantı", "Cihaz Kaydı Yok, \r\n Kayıt işlemi deneniyor", "", "TAMAM :)", "");
                     alarm.showAlarm(Init2.this);
 
-                    registerDeviceState = ids.registerDevice(androidID, accounts[0].name.toLowerCase(), DeviceType.MOBILE_DEVICE.getCode());
+                    registerDeviceState = ids.registerDevice(androidID, sp.kullaniciAdiGetir(), DeviceType.MOBILE_DEVICE.getCode());
                     if (registerDeviceState < -1) {
                         ivServerDokunus.setImageResource(R.drawable.cross);
                         ivServerKayit.setImageResource(R.drawable.cross);

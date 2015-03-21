@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 /**
  * Created by eakbiyik on 26.12.2014.
  */
-public  class SharedPrefBilgisi {
+public class SharedPrefBilgisi {
     private static SharedPreferences mSharedPrefs ;
 
 //    private static SharedPrefBilgisi instance = null;
@@ -108,5 +108,17 @@ public  class SharedPrefBilgisi {
         SharedPreferences.Editor editor=mSharedPrefs.edit();
         editor.putInt("updatePeriodmilis",updatePeriodmilisGetir);
         editor.commit();
+    }
+
+    public void kullaniciAdiYaz(String mKullaniciAdi) {
+        SharedPreferences.Editor editor=mSharedPrefs.edit();
+        editor.putString("kullaniciAdi", mKullaniciAdi);
+        editor.commit();
+    }
+
+    public String kullaniciAdiGetir() {
+        String kullaniciAdi;
+        kullaniciAdi= mSharedPrefs.getString("kullaniciAdi", "");
+        return kullaniciAdi;
     }
 }

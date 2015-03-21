@@ -110,10 +110,10 @@ public class MainActivity extends ActionBarActivity{
                     } else {
                         swAktivasyon.setChecked(false);
                         _tvStatus.setText("BAĞLANTI HAZIR DEĞİL");
-                        konusucu.tekTrackCal(R.raw.all_ready);
+                        konusucu.tekTrackCal(R.raw.preparing_connection);
 
-                        Init2 init = new Init2();
-                        Intent tetik = new Intent(MainActivity.this, init.getClass());
+                        Init2 init2 = new Init2();
+                        Intent tetik = new Intent(MainActivity.this, init2.getClass());
                         startActivity(tetik);
                     }
                 } else { //eğer switch off olursa
@@ -145,6 +145,13 @@ public class MainActivity extends ActionBarActivity{
     protected  void onResume (){
         super.onResume();
         if (InitInfo.getInstance().isInited() ){swAktivasyon.setChecked(true);}
+        //eger kullanıcı adı yok ise Init acalım ve kullanıcı adı oluşturalım
+        if (sp.kullaniciAdiGetir().isEmpty()){
+            Init init = new Init();
+            Intent tetik = new Intent(MainActivity.this, init.getClass());
+            startActivity(tetik);
+        }
+
     }
 
     protected void onPause (){
@@ -277,7 +284,7 @@ public class MainActivity extends ActionBarActivity{
     public void onBackPressed()
     {
         if (back_pressed + 2000 > System.currentTimeMillis()) super.onBackPressed();
-        else Toast.makeText(getBaseContext(), "Çıkmak için tekrar basınız!", Toast.LENGTH_SHORT).show();
+        else Toast.makeText(getBaseContext(), "Çıkmak istediğinizden emin misiniz?", Toast.LENGTH_SHORT).show();
         back_pressed = System.currentTimeMillis();
     }
 }

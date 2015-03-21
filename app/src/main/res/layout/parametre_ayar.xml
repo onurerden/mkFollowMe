@@ -10,6 +10,20 @@
     android:padding="@dimen/Ekran_padding">
 
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Görünen Ad (Min 6 Karakter)"
+        android:id="@+id/tvKulaniciAdi" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/etKullaniciAdi" />
+
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -83,7 +97,7 @@
 
     <CheckBox
         android:layout_width="wrap_content"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:id="@+id/wifiCheckBox"
         android:text="WiFi bağlantısına izin ver"
         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -92,7 +106,7 @@
 
     <CheckBox
         android:layout_width="wrap_content"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:id="@+id/rotaSecenegi"
         android:text="RotaID her aktivitede yenilensin "
         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -102,7 +116,7 @@
     <Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="117dp"
-        android:layout_height="15dp"
+        android:layout_height="30dp"
         android:text="Kaydet"
         android:id="@+id/btnKaydet"
         android:layout_gravity="center_horizontal"
