@@ -9,7 +9,7 @@ public class InitInfo {
     public int mobileEdgeOr3G ;
     public boolean isMobileConnected;
     public boolean isWifiEnabled;
-    public boolean isInited;
+    public boolean isInited=false;
 
     private static InitInfo instance = null;
 

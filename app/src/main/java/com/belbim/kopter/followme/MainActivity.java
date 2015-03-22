@@ -59,7 +59,7 @@ public class MainActivity extends ActionBarActivity{
 
         sp = new SharedPrefBilgisi(MainActivity.this); //SharedPref ten okuyan ve oraya yazan Class'ın hazırlanması
         ids = new IDeviceServerImpl();
-        konusucu =new Konus(MainActivity.this);
+        konusucu =new Konus(this);
 
         //GPSTracker ile konum alınıyor, Bunu servis olarak başlatmak gerekiyor(muş)!!!
         intentGPSTracker = new Intent(this, GPSTracker.class);
@@ -96,7 +96,7 @@ public class MainActivity extends ActionBarActivity{
                         gps.baslat(sp.GPSupdatePeriodmilisGetir()); // GPS provider update leri durmuş ise tekrar başlat
 
                         _tvStatus.setText("BAĞLANTI HAZIR");
-                        konusucu.tekTrackCal(R.raw.all_ready);
+                        //konusucu.tekTrackCal(R.raw.all_ready);
 
 
                         if (routeId==0 || sp.rotaSecenegiGetir()){routeId=ids.getRouteId(sp.cihazIdGetir());}
@@ -132,7 +132,7 @@ public class MainActivity extends ActionBarActivity{
                     _tvHiz.setText("---");
                     _tvStatus.clearAnimation();
                     _tvStatus.setText("GÖNDERİM DURDURULDU");
-                    konusucu.tekTrackCal(R.raw.all_ready);
+                    //konusucu.tekTrackCal(R.raw.all_ready);
 
                     tvRota.setText("---");
                     gps.durdur(); // gps update lerini durdur
@@ -146,6 +146,7 @@ public class MainActivity extends ActionBarActivity{
         super.onResume();
         if (InitInfo.getInstance().isInited() ){swAktivasyon.setChecked(true);}
         //eger kullanıcı adı yok ise Init acalım ve kullanıcı adı oluşturalım
+
         if (sp.kullaniciAdiGetir().isEmpty()){
             Init init = new Init();
             Intent tetik = new Intent(MainActivity.this, init.getClass());
@@ -179,7 +180,7 @@ public class MainActivity extends ActionBarActivity{
 
                 if (!gps.gpsKilitlendiMi()) {  //(gps.location.getAccuracy() > 0.01) && (gps.location.getAccuracy() < 5)
                     _tvStatus.setText("GPS ARANIYOR");
-                    konusucu.tekTrackCal(R.raw.searching);
+                    //konusucu.tekTrackCal(R.raw.searching);
 
                     if (_tvStatus.getVisibility()==View.VISIBLE){_tvStatus.setVisibility(View.INVISIBLE);} else {_tvStatus.setVisibility(View.VISIBLE);}
                 }

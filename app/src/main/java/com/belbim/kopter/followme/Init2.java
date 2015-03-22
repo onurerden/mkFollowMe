@@ -33,6 +33,7 @@ public class Init2 extends Activity {
     String androidID;
     Account[] accounts;
     private Handler handler;
+    IntentFilter filters;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,15 +56,19 @@ public class Init2 extends Activity {
         ivServerKayit = (ImageView) findViewById(R.id.ivServerKayit);
         ivServerDokunus = (ImageView) findViewById(R.id.ivDokunus);
 
-        IntentFilter filters = new IntentFilter();
+        filters = new IntentFilter();
         filters.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-
-        super.registerReceiver(mBroadcastReceiver, filters);
-
     }
+
+    protected void onPause(){
+        super.onPause();
+        super.unregisterReceiver(mBroadcastReceiver);
+    }
+
 
     protected void onResume(){
         super.onResume();
+        super.registerReceiver(mBroadcastReceiver, filters);
     }
 
     public void devamEt(View view) {
@@ -141,7 +146,10 @@ public class Init2 extends Activity {
         }
 
         if (!sp.wifiCheckGetir()){
-            if (mobileInfo.isConnected() && touchServerState>-1){button.setVisibility(View.VISIBLE);}
+            if (mobileInfo.isConnected() && touchServerState>-1){
+                button.setVisibility(View.VISIBLE);
+              //  devamEt(button);
+            }
             else {
                 button.setVisibility(View.INVISIBLE);
                 Alarm wifiAyarAlarm = new Alarm(" Wifi Ayarı", "Lütfen Wifi Kapatınız", "Wifi Ayarları", "İptal", Settings.ACTION_WIFI_SETTINGS);
@@ -150,7 +158,10 @@ public class Init2 extends Activity {
         }
 
         else {
-            if ((mobileInfo.isConnected() || wifiInfo.isConnected())&& touchServerState>-1 ){button.setVisibility(View.VISIBLE);}
+            if ((mobileInfo.isConnected() || wifiInfo.isConnected())&& touchServerState>-1 ){
+                button.setVisibility(View.VISIBLE);
+              //  devamEt(button);
+            }
             else {
                 button.setVisibility(View.INVISIBLE);
                 Alarm wifiAyarAlarm = new Alarm(" Mobil Ağ Bağlantı", "Lütfen Mobil ağ bağlantınızı kontrol ediniz", "", "TAMAM","");

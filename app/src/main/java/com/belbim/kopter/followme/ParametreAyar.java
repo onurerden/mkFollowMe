@@ -66,6 +66,7 @@ public class ParametreAyar extends Activity {
             _etCihazId.setBackgroundColor(Color.parseColor("#ff0000"));
             _etGuncellemePeriyodu.setBackgroundColor(Color.parseColor("#ff0000"));
             etAccuarcy.setBackgroundColor(Color.parseColor("#ff0000"));
+            etKullaniciAdi.setBackgroundColor(Color.parseColor("#ff0000"));
         }
     }
 }

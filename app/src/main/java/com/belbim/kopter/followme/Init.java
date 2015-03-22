@@ -13,7 +13,8 @@ public class Init extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_init);
-        etKullaniciAdi = (EditText) findViewById(R.id.etKullaniciAdi);
+        sp =new SharedPrefBilgisi(this);
+        etKullaniciAdi = (EditText) findViewById(R.id.etKullaniciAdi1);
     }
 
     public void kaydetKullanici(View view){
