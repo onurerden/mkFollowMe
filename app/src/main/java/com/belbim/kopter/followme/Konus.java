@@ -3,43 +3,76 @@ package com.belbim.kopter.followme;
 import android.content.Context;
 import android.media.MediaPlayer;
 
+import java.util.ArrayList;
+
+
 /**
  * Created by eakbiyik on 19.3.2015.
  */
-public class Konus extends MediaPlayer implements MediaPlayer.OnCompletionListener{
+public class Konus implements MediaPlayer.OnCompletionListener {
 
-    MediaPlayer mMediaPlayer;
-    private int trackSayisi=0;
-    private int gecerliTrack=0;
-    Context mContext;
-    private int [] mDosyalarDizisi;
+    MediaPlayer mp;
+    Context cntx;
+    private ArrayList<Integer> liste;
+    private int gecerliTrack = 0;
+    private int trackSayisi = 0;
 
-    public Konus(Context mContext) {
-        mMediaPlayer = new MediaPlayer();
-        this.mContext=mContext;
-        mMediaPlayer.setOnCompletionListener(this);
+    public Konus(Context ctx) {
+        this.cntx = ctx;
+        this.liste = new ArrayList<Integer>();
     }
 
-    public void listeCal(int[] dosyalarDizisi){
-        mDosyalarDizisi =dosyalarDizisi;
-        trackSayisi= mDosyalarDizisi.length;
-        mMediaPlayer.create(mContext,mDosyalarDizisi[0]);
-        mMediaPlayer.start();
-    }
-    public void tekTrackCal(int dosya){
-        mMediaPlayer.create(mContext,dosya);
-                    mMediaPlayer.start();
+
+    public void trackCal(int dosya) {
+
+        mp = MediaPlayer.create(cntx, dosya);
+        mp.setOnCompletionListener(this);
+        mp.start();
+
 
     }
 
-    @Override
-    public void onCompletion(MediaPlayer arg0) {
-        mMediaPlayer.release();
-        if (gecerliTrack< trackSayisi){
-            gecerliTrack++;
-            mMediaPlayer.create(mContext, mDosyalarDizisi[gecerliTrack]);
-            mMediaPlayer.start();
+    public void trackCal() {
+
+        if (mp != null && mp.isPlaying()) {
+            return;
+        } else {
+            mp = MediaPlayer.create(cntx, liste.get(0));
+            gecerliTrack = 1;
+            mp.setOnCompletionListener(this);
+            mp.start();
         }
 
     }
+
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        mp.reset();
+
+        if (gecerliTrack < liste.size()) {
+
+            trackCal(liste.get(gecerliTrack));
+            gecerliTrack++;
+        }
+
+
+    }
+
+    public void setListe(ArrayList<Integer> liste) {
+        this.liste = liste;
+    }
+
+    public void addListe(Integer i){
+        this.liste.add(i);
+    }
+
+    public void clearListe(){
+        this.liste.clear();
+    }
 }
+
+
+
+
+
