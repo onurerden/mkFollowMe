@@ -10,6 +10,7 @@ public class InitInfo {
     public boolean isMobileConnected;
     public boolean isWifiEnabled;
     public boolean isInited=false;
+    public MKSession mkSession=null;
 
     private static InitInfo instance = null;
 
@@ -61,5 +62,13 @@ public class InitInfo {
 
     public void setInited(boolean isInited) {
         this.isInited = isInited;
+    }
+
+    public void setMkSession(MKSession mMkSession){
+        this.mkSession=mMkSession;
+    }
+
+    public MKSession getMkSession(){
+        return mkSession;
     }
 }

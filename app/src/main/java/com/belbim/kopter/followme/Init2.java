@@ -27,13 +27,13 @@ public class Init2 extends Activity {
     ImageView ivServerDokunus;
     Button button;
     SharedPrefBilgisi sp;
-    int touchServerState;
     int registerDeviceState;
     IDeviceServerImpl ids;
     String androidID;
     Account[] accounts;
     private Handler handler;
     IntentFilter filters;
+    JSONProvider<MKSession> jp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +42,7 @@ public class Init2 extends Activity {
         sp=new SharedPrefBilgisi(Init2.this);
 
 
-
+        jp = new JSONProvider<>();
         button = (Button) findViewById(R.id.button);
         button.setVisibility(View.INVISIBLE);
         sp.cihazIdYaz(-1);
@@ -107,8 +107,10 @@ public class Init2 extends Activity {
         if (mobileInfo.isConnected()){ivMobilAgBaglanti.setImageResource(R.drawable.tick);}else if(sp.wifiCheckGetir()){ivMobilAgBaglanti.setImageResource(R.drawable.warning);} else {ivMobilAgBaglanti.setImageResource(R.drawable.cross);}
 
         if (mobileInfo.isConnected() || wifiInfo.isConnected()  ){
-            touchServerState = ids.touchServer(androidID, DeviceType.MOBILE_DEVICE.getCode());
-            switch (touchServerState) {
+
+            InitInfo.getInstance().setMkSession(jp.jsonToEntity(ids.touchServer(androidID, DeviceType.MOBILE_DEVICE.getCode()), MKSession.class));
+
+            switch (InitInfo.getInstance().getMkSession().getDeviceId()) {
                 case -1:
                     ivServerDokunus.setImageResource(R.drawable.cross);
                     ivServerKayit.setImageResource(R.drawable.cross);
@@ -134,19 +136,20 @@ public class Init2 extends Activity {
                         alarm2.showAlarm(Init2.this);
                     } else {
                         ivServerKayit.setImageResource(R.drawable.tick);
-                        touchServerState = ids.touchServer(androidID, DeviceType.MOBILE_DEVICE.getCode());
+
+                        InitInfo.getInstance().setMkSession(jp.jsonToEntity(ids.touchServer(androidID, DeviceType.MOBILE_DEVICE.getCode())));
                     }
                     break;
                 default:
                     ivServerKayit.setImageResource(R.drawable.tick);
                     ivServerDokunus.setImageResource(R.drawable.tick);
-                    sp.cihazIdYaz(touchServerState);
+                    sp.cihazIdYaz(InitInfo.getInstance().getMkSession().getDeviceId());
                     break;
             }
         }
 
         if (!sp.wifiCheckGetir()){
-            if (mobileInfo.isConnected() && touchServerState>-1){
+            if (mobileInfo.isConnected() && InitInfo.getInstance().getMkSession().getDeviceId()>-1){
                 button.setVisibility(View.VISIBLE);
               //  devamEt(button);
             }
@@ -158,7 +161,7 @@ public class Init2 extends Activity {
         }
 
         else {
-            if ((mobileInfo.isConnected() || wifiInfo.isConnected())&& touchServerState>-1 ){
+            if ((mobileInfo.isConnected() || wifiInfo.isConnected())&& InitInfo.getInstance().getMkSession().getDeviceId()>-1 ){
                 button.setVisibility(View.VISIBLE);
               //  devamEt(button);
             }

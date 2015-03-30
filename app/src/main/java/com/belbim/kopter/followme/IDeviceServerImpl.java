@@ -2,11 +2,6 @@ package com.belbim.kopter.followme;
 
 import android.os.AsyncTask;
 
-import com.belbim.kopter.followme.DeviceType;
-import com.belbim.kopter.followme.OperationConfig;
-import com.belbim.kopter.followme.IDeviceServer;
-import com.belbim.kopter.followme.Kopter;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
@@ -38,7 +33,17 @@ public class IDeviceServerImpl extends HttpConnectionProvider implements IDevice
     }
 
     @Override
-    public int touchServer(String uid, String deviceType) {
+    public int sendLog(String logJson) {
+        return 0;
+    }
+
+    @Override
+    public int endRoute(int routeId) {
+        return 0;
+    }
+
+    @Override
+    public String touchServer(String uid, String deviceType) {
 
         try {
             List<NameValuePair> qparams = new ArrayList<NameValuePair>();
@@ -48,11 +53,10 @@ public class IDeviceServerImpl extends HttpConnectionProvider implements IDevice
             String queryParamters = URLEncodedUtils.format(qparams, "UTF-8");
 
             AsyncTask<String, String, String> execute = new AsyncTaskClass().execute(OperationConfig.JsonActionList.touchServer.toString(), queryParamters);
-
-            return Integer.valueOf(execute.get());
+            return execute.get();
         } catch (Exception e) {
             e.printStackTrace();
-            return -1;
+            return "";
         }
     }
 
@@ -96,6 +100,11 @@ public class IDeviceServerImpl extends HttpConnectionProvider implements IDevice
     }
 
     @Override
+    public String getKopterStatus(int deviceId) {
+        return null;
+    }
+
+    @Override
     public String getTask(int deviceID) {
         try {
             List<NameValuePair> qparams = new ArrayList<NameValuePair>();
@@ -110,6 +119,11 @@ public class IDeviceServerImpl extends HttpConnectionProvider implements IDevice
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public int setTask(int kopterId, int followMeDeviceId) {
+        return 0;
     }
 
     @Override
@@ -129,6 +143,11 @@ public class IDeviceServerImpl extends HttpConnectionProvider implements IDevice
             e.printStackTrace();
             return -1;
         }
+    }
+
+    @Override
+    public String getFollowMeData(int deviceId) {
+        return null;
     }
 
     public Collection<Kopter> getRegisteredData(DeviceType type) {

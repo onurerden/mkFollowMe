@@ -12,9 +12,10 @@ import java.util.List;
 /**
  * Created by asay on 23.12.2014.
  */
-public class JSONProvider<T>  {
+public class JSONProvider<T> {
 
     Gson gson = new Gson();
+
 
     public String entityToJson(T entity) {
 
@@ -24,14 +25,22 @@ public class JSONProvider<T>  {
 
     public T jsonToEntity(String json) {
 
-        Type type = new TypeToken<T>() {}.getType();
+        Type type = new TypeToken<T>() {
+        }.getType();
+        T entity = gson.fromJson(json, type);
+        return entity;
+    }
+
+    public T jsonToEntity(String json, Type type) {
+
         T entity = gson.fromJson(json, type);
         return entity;
     }
 
     public Collection<T> fromJSonToEntityList(String json) {
 
-        Collection<T> list = gson.fromJson(json, new TypeToken<List<T>>() {}.getType());
+        Collection<T> list = gson.fromJson(json, new TypeToken<List<T>>() {
+        }.getType());
         return list;
     }
 

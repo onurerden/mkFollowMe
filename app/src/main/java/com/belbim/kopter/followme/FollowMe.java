@@ -14,6 +14,8 @@ public class FollowMe {
     private int event=0;
     private int followMeDeviceId;
     private int routeId;
+    int sessionId = -1;
+
 
     public int getRouteId(){
         return routeId;
@@ -67,7 +69,9 @@ public class FollowMe {
         return followMeDeviceId;
     }
 
-    public void setFollowMeDeviceId(int followMeDeviceId) {
-        this.followMeDeviceId = followMeDeviceId;
-    }
+    public void setFollowMeDeviceId(int followMeDeviceId) {this.followMeDeviceId = followMeDeviceId;}
+
+    public int getSessionId() {return this.sessionId;}
+
+    public void setSessionId(int id) {this.sessionId = id;}
 }

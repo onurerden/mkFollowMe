@@ -13,10 +13,6 @@ public class Swipe extends Activity {
     float m_lastTouchX, m_dx,m_posX,m_prevX ;
     int imageWidth;
     int maxImageX;
-    double actionDownPosition = 0;
-    double actionMoveDistance = 0;
-    double actionInitialPosition = 0;
-    double actionNewPosition=0;
     RelativeLayout mRelativeMain;
     RelativeLayout.LayoutParams iVParams;
     Konus konusucu;
@@ -46,27 +42,20 @@ public class Swipe extends Activity {
                     break;
 
                 case MotionEvent.ACTION_UP:
-
-               //     konusucu.trackCal(R.raw.go);
-
+                    konusucu.clearListe();
                     konusucu.addListe(R.raw.activated);
                     konusucu.addListe(R.raw.gps);
-                    konusucu.addListe(R.raw.location_information);
+                    konusucu.addListe(R.raw.information);
                     konusucu.addListe(R.raw.sending);
-
-
                     konusucu.trackCal();
-                    konusucu.clearListe();
 
                     if (m_posX>mRelativeMain.getWidth()/2){
-                        iVParams.setMargins(maxImageX,0,0,0);
+                        iVParams.setMargins(maxImageX, 0, 0, 0);
                         m_ivImage.setImageResource(R.drawable.swipe_left);
                     }
-
                     if (m_posX<mRelativeMain.getWidth()/2 ){
-                        iVParams.setMargins(0,0,0,0);
+                        iVParams.setMargins(0, 0, 0, 0);
                         m_ivImage.setImageResource(R.drawable.swipe_right);
-
                     }
                     break;
 
