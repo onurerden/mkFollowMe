@@ -131,7 +131,7 @@ public class MainActivity extends ActionBarActivity {
 
                     if (routeId>0 && fm != null){ //rotayı sonlandırır
                         int endRouteStatus= ids.endRoute(routeId);
-                        if (endRouteStatus==1) {tvRota.setText("Rota Sonlandırıldı");}
+                        if (endRouteStatus==1) {tvRota.setText("Rota Sonlandırıldı");} else {tvRota.setText("Rota Sonlandırmada Hata!");}
                     }
 /*
                     try {                       // dosyayı sonlandırır
@@ -175,7 +175,6 @@ public class MainActivity extends ActionBarActivity {
             startActivity(tetik);
         }
 
-        fm = new FollowMe();
         jsp = new JSONProvider<>();
 
     }
@@ -225,9 +224,9 @@ public class MainActivity extends ActionBarActivity {
                         if (_rgParametre.getCheckedRadioButtonId() == R.id.rbFollowMe)
                             konumParametre = 1;
                         else konumParametre = 0;
-
+                        fm = new FollowMe();
                         fm.setEvent(konumParametre);
-                        if (gps.location != null && routeId > 0 && gps.locationGetir().getAccuracy() < sp.accuarcyGetir()) {
+                        if ( gps.location != null && routeId > 0 && gps.locationGetir().getAccuracy() < sp.accuarcyGetir() ) {
                             fm.setLat(gps.locationGetir().getLatitude());
                             fm.setLng(gps.locationGetir().getLongitude());
                             fm.setFollowMeDeviceId(sp.cihazIdGetir());
@@ -250,10 +249,11 @@ public class MainActivity extends ActionBarActivity {
                             _tvGPSPozisyon.setText(String.format("%.3f", gps.location.getLatitude()) + " | " + String.format("%.3f", gps.location.getLongitude()));
                             _tvStatus.setVisibility(View.VISIBLE);
                             _tvStatus.setText("VERİ GÖNDERİLİYOR");
-                            konusucu.clearListe();
-                            konusucu.addListe(R.raw.information);
-                            konusucu.addListe(R.raw.sending);
+
+/*
                             konusucu.trackCal();
+                            konusucu.clearListe();
+*/
 
                         } else if (routeId < 0) {
                             _tvStatus.setText("Rota Bilgisi Alınamıyor");
@@ -321,6 +321,7 @@ public class MainActivity extends ActionBarActivity {
     public void onStop() {
         super.onStop();
         gps.durdur();
+        this.stopService(intentGPSTracker);
     }
 
     @Override
