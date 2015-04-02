@@ -39,7 +39,18 @@ public class IDeviceServerImpl extends HttpConnectionProvider implements IDevice
 
     @Override
     public int endRoute(int routeId) {
-        return 0;
+        try {
+            List<NameValuePair> qparams = new ArrayList<NameValuePair>();
+            qparams.add((new BasicNameValuePair("routeId", "" + routeId)));
+            String queryParameters = URLEncodedUtils.format(qparams, "UTF-8");
+
+            AsyncTask<String, String, String> execute = new AsyncTaskClass().execute(OperationConfig.JsonActionList.getRouteId.toString(), queryParameters);
+            return Integer.valueOf(execute.get());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
     @Override
