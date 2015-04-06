@@ -33,14 +33,13 @@
 
     <TableLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/tvlbl"
         android:layout_alignRight="@+id/tvlbl"
         android:layout_alignEnd="@+id/tvlbl"
         android:layout_alignLeft="@+id/tvlbl"
         android:layout_alignStart="@+id/tvlbl"
-        android:id="@+id/tableLayout"
-        android:layout_above="@+id/button">
+        android:id="@+id/tableLayout">
 
         <TableRow
             android:layout_width="fill_parent"
@@ -193,5 +192,26 @@
         </TableRow>
 
     </TableLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Tekrar başlamak için dokunun!"
+        android:id="@+id/tvLabel"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/button" />
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:max="100"
+        android:indeterminate="false"
+        android:progress="50" />
+
 </RelativeLayout>
 

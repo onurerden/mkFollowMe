@@ -6,7 +6,7 @@ import java.sql.Timestamp;
  * @author oerden
  */
 public class MKSession {
-    private int deviceId;
+    private int deviceId=-3;
     private int sessionId;
     private Timestamp time;
     private DeviceType mDeviceType;

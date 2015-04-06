@@ -129,7 +129,7 @@ public class MainActivity extends ActionBarActivity {
                 } else { //eğer switch off olursa
                     mHandler.removeCallbacks(mUpdateTimeTask); //Handler i durdurur
 
-                    if (routeId>0 && fm != null){ //rotayı sonlandırır
+                    if (routeId>0 && gidenVeriSayisi >0){ //rotayı sonlandırır
                         int endRouteStatus= ids.endRoute(routeId);
                         if (endRouteStatus==1) {tvRota.setText("Rota Sonlandırıldı");} else {tvRota.setText("Rota Sonlandırmada Hata!");}
                     }
@@ -169,10 +169,13 @@ public class MainActivity extends ActionBarActivity {
         }
 
         //eger kullanıcı adı yok ise Init acalım ve kullanıcı adı oluşturalım
-        if (sp.kullaniciAdiGetir().isEmpty()) {
+        if (sp.kullaniciAdiGetir().isEmpty() || sp.cihazIdGetir()==0) {
             Init init = new Init();
             Intent tetik = new Intent(MainActivity.this, init.getClass());
             startActivity(tetik);
+            Init2 init2 = new Init2();
+            Intent tetik2 = new Intent(MainActivity.this, init2.getClass());
+            startActivity(tetik2);
         }
 
         jsp = new JSONProvider<>();

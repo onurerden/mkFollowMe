@@ -7,7 +7,7 @@ public  class OperationConfig {
 
     public static enum JsonActionList {
         touchServer("/mkWS/TouchServer"),
-        registerDevice("/mkWS/registerDevice"),
+        registerDevice("/mkWS/RegisterDevice"),
         sendStatus("/mkWS/SendStatus"),
         getTask("/mkWS/getTask"),
         sendFollowMeData("/mkWS/SendFollowMeData"),

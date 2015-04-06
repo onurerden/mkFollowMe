@@ -1,20 +1,23 @@
 package com.belbim.kopter.followme;
 
 import android.accounts.Account;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.app.Activity;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 
 public class Init2 extends Activity {
@@ -25,7 +28,11 @@ public class Init2 extends Activity {
     ImageView ivMobileEdgeOr3g;
     ImageView ivServerKayit;
     ImageView ivServerDokunus;
+    View parametreAyarLayout;
     Button button;
+    TextView tvLabel;
+    ProgressBar pb;
+
     SharedPrefBilgisi sp;
     int registerDeviceState;
     IDeviceServerImpl ids;
@@ -40,6 +47,7 @@ public class Init2 extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_init2);
         sp=new SharedPrefBilgisi(Init2.this);
+        pb = (ProgressBar) findViewById(R.id.progressBar);
 
 
         jp = new JSONProvider<>();
@@ -49,12 +57,15 @@ public class Init2 extends Activity {
         ids = new IDeviceServerImpl();
         androidID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
+        parametreAyarLayout= findViewById(R.id.parametreAyarLayout);
         ivWifi = (ImageView) findViewById(R.id.ivWifi);
         ivMobilAg = (ImageView) findViewById(R.id.ivMobilAg);
         ivMobilAgBaglanti = (ImageView) findViewById(R.id.ivMobilAgBaglanti);
         ivMobileEdgeOr3g = (ImageView) findViewById(R.id.ivMobileEdgeOr3G);
         ivServerKayit = (ImageView) findViewById(R.id.ivServerKayit);
         ivServerDokunus = (ImageView) findViewById(R.id.ivDokunus);
+        tvLabel= (TextView) findViewById(R.id.tvLabel);
+
 
         filters = new IntentFilter();
         filters.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -63,12 +74,15 @@ public class Init2 extends Activity {
     protected void onPause(){
         super.onPause();
         super.unregisterReceiver(mBroadcastReceiver);
+        tvLabel.setVisibility(View.VISIBLE);
     }
 
 
     protected void onResume(){
         super.onResume();
         super.registerReceiver(mBroadcastReceiver, filters);
+        parametreAyarLayout.setOnTouchListener(mOnTouchListener);
+        tvLabel.setVisibility(View.INVISIBLE);
     }
 
     public void devamEt(View view) {
@@ -83,8 +97,17 @@ public class Init2 extends Activity {
         }
     };
 
-    public void ekranKontrolleriniAyarla(){
+    View.OnTouchListener mOnTouchListener = new View.OnTouchListener(){
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            ekranKontrolleriniAyarla();
+            return true;
+        }
+    };
 
+    public void ekranKontrolleriniAyarla(){
+        tvLabel.setVisibility(View.INVISIBLE);
+        pb.setProgress(0);
         ConnectivityManager cnnMgr = (ConnectivityManager)this.getSystemService((this.CONNECTIVITY_SERVICE));
 
         NetworkInfo wifiInfo = cnnMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
@@ -120,8 +143,6 @@ public class Init2 extends Activity {
                 case -3:
                     ivServerDokunus.setImageResource(R.drawable.cross);
                     ivServerKayit.setImageResource(R.drawable.cross);
-                    Alarm alarm = new Alarm("Sunucu Bağlantı", "Cihaz Kaydı Yok, \r\n Kayıt işlemi deneniyor", "", "TAMAM :)", "");
-                    alarm.showAlarm(Init2.this);
 
                     registerDeviceState = ids.registerDevice(androidID, sp.kullaniciAdiGetir(), DeviceType.MOBILE_DEVICE.getCode());
                     if (registerDeviceState < -1) {
@@ -163,14 +184,20 @@ public class Init2 extends Activity {
         else {
             if ((mobileInfo.isConnected() || wifiInfo.isConnected())&& InitInfo.getInstance().getMkSession().getDeviceId()>-1 ){
                 button.setVisibility(View.VISIBLE);
+                pb.setProgress(100);
               //  devamEt(button);
             }
             else {
                 button.setVisibility(View.INVISIBLE);
-                Alarm wifiAyarAlarm = new Alarm(" Mobil Ağ Bağlantı", "Lütfen Mobil ağ bağlantınızı kontrol ediniz", "", "TAMAM","");
+                Alarm wifiAyarAlarm = new Alarm(" HATA!!!", "Bağlantı Yok yada Sunucudan Düzgün Yanıt Alınamadı,\r\n Uygulama Geliştirici ile irtibat kurunuz.", "", "TAMAM:(","");
                 wifiAyarAlarm.showAlarm(Init2.this);
+                tvLabel.setVisibility(View.VISIBLE);
+                pb.setVisibility(View.INVISIBLE);
             }
         }
 
     }
+
+
+
 }

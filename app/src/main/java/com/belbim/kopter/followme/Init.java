@@ -15,6 +15,7 @@ public class Init extends Activity {
         setContentView(R.layout.activity_init);
         sp =new SharedPrefBilgisi(this);
         etKullaniciAdi = (EditText) findViewById(R.id.etKullaniciAdi1);
+        etKullaniciAdi.setText(sp.kullaniciAdiGetir());
     }
 
     public void kaydetKullanici(View view){
