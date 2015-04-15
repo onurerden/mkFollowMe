@@ -43,6 +43,7 @@ public class Konus implements MediaPlayer.OnCompletionListener {
             mp.start();
         }
 
+
     }
 
 
@@ -54,6 +55,8 @@ public class Konus implements MediaPlayer.OnCompletionListener {
 
             trackCal(liste.get(gecerliTrack));
             gecerliTrack++;
+        }else{
+            this.clearListe();
         }
 
 

@@ -152,7 +152,7 @@ public class IDeviceServerImpl extends HttpConnectionProvider implements IDevice
             return Integer.valueOf(ss);
         } catch (Exception e) {
             e.printStackTrace();
-            return -1;
+            return -3;
         }
     }
 

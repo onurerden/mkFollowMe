@@ -100,7 +100,13 @@ public class Init2 extends Activity {
     View.OnTouchListener mOnTouchListener = new View.OnTouchListener(){
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-            ekranKontrolleriniAyarla();
+            new Thread() {
+                @Override
+                public void run() {
+                    ekranKontrolleriniAyarla();
+                }
+            }.start();
+
             return true;
         }
     };

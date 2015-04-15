@@ -25,7 +25,7 @@ public class SharedPrefBilgisi {
 
     public int guncellemePeriyoduGetir(){
         int guncellemePeriyodu;
-        guncellemePeriyodu=mSharedPrefs.getInt("guncelleme_periyodu",10000);
+        guncellemePeriyodu=mSharedPrefs.getInt("guncelleme_periyodu",5000);
         return guncellemePeriyodu;
     }
 
@@ -100,7 +100,7 @@ public class SharedPrefBilgisi {
 
     public int GPSupdatePeriodmilisGetir(){
         int updatePeriodmilisGetir;
-        updatePeriodmilisGetir=mSharedPrefs.getInt("updatePeriodmilis",5000);
+        updatePeriodmilisGetir=mSharedPrefs.getInt("updatePeriodmilis",2000);
         return updatePeriodmilisGetir;
     }
 

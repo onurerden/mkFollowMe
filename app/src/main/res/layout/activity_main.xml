@@ -15,7 +15,10 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:textSize="14pt"
+        android:textAlignment="center"
+        android:gravity="center_horizontal" />
 
 
     <TextView
@@ -24,10 +27,10 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="KONUM BİLGİSİ:"
         android:id="@+id/tvlblGpsPozisyon"
-        android:layout_marginTop="49dp"
-        android:layout_below="@+id/tvStatus"
+        android:layout_marginTop="80dp"
         android:textColor="#000000"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_alignTop="@+id/tvStatus" />
 
     <TextView
         android:layout_width="wrap_content"

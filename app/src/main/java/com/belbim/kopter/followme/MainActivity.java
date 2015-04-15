@@ -39,6 +39,7 @@ public class MainActivity extends ActionBarActivity {
     int iterasyonSayisi = 0;
     int gidenVeriSayisi = 0;
     int routeId = 0;
+    int gonderimdurumu=-1;
     Intent intentGPSTracker;
     FileOutputStream outputStream;
     ////////////////////
@@ -145,9 +146,9 @@ public class MainActivity extends ActionBarActivity {
                     _tvSayac.setText("0,0");
                     _tvGPSPozisyon.setText("");
                     _tvHiz.setText("---");
+                    _tvStatus.setTextColor(Color.parseColor("#000000"));
                     _tvStatus.setText("GÖNDERİM DURDURULDU");
-                    konusucu.clearListe();
-                    konusucu.addListe(R.raw.information);
+                    konusucu.addListe(R.raw.activity);
                     konusucu.addListe(R.raw.stopped);
                     konusucu.trackCal();
 
@@ -209,9 +210,8 @@ public class MainActivity extends ActionBarActivity {
             } else {
                 mHandler.postDelayed(this, sp.guncellemePeriyoduGetir());
 
-                if (!gps.gpsKilitlendiMi()) {  //(gps.location.getAccuracy() > 0.01) && (gps.location.getAccuracy() < 5)
+                if (!gps.gpsKilitlendiMi()) {
                     _tvStatus.setText("GPS ARANIYOR");
-                    konusucu.clearListe();
                     konusucu.addListe(R.raw.gps);
                     konusucu.addListe(R.raw.searching);
                     konusucu.trackCal();
@@ -226,7 +226,7 @@ public class MainActivity extends ActionBarActivity {
 
                         if (_rgParametre.getCheckedRadioButtonId() == R.id.rbFollowMe)
                             konumParametre = 1;
-                        else konumParametre = 0;
+                        else konumParametre = 2;
                         fm = new FollowMe();
                         fm.setEvent(konumParametre);
                         if ( gps.location != null && routeId > 0 && gps.locationGetir().getAccuracy() < sp.accuarcyGetir() ) {
@@ -235,7 +235,29 @@ public class MainActivity extends ActionBarActivity {
                             fm.setFollowMeDeviceId(sp.cihazIdGetir());
                             fm.setRouteId(routeId);
                             fm.setSessionId(InitInfo.getInstance().getMkSession().getSessionId());
-                            ids.sendFollowMeData(jsp.entityToJson(fm));
+                            gonderimdurumu=ids.sendFollowMeData(jsp.entityToJson(fm));
+
+                            switch (gonderimdurumu){
+                                case 0:
+                                    _tvStatus.setTextColor(Color.parseColor("#FF00AAFF"));
+                                    _tvStatus.setText("VERİ GÖNDERİLİYOR");
+                                    break;
+                                case -1:
+                                    _tvStatus.setTextColor(Color.parseColor("#FF0000"));
+                                    _tvStatus.setText("DB Erişim Hatası");
+                                    konusucu.trackCal(R.raw.warning);
+                                    break;
+                                case -2:
+                                    _tvStatus.setTextColor(Color.parseColor("#FF0000"));
+                                    _tvStatus.setText("Hatalı Veri!!!");
+                                    konusucu.trackCal(R.raw.warning);
+                                    break;
+                                case -3:
+                                    _tvStatus.setTextColor(Color.parseColor("#FF0000"));
+                                    _tvStatus.setText("Async Task Hatası!");
+                                    konusucu.trackCal(R.raw.warning);
+                                    break;
+                            }
 
                             /*DOSYAYA YAZAN BÖLÜM
                             try {
@@ -249,14 +271,8 @@ public class MainActivity extends ActionBarActivity {
                             _dogruluk.setText("Doğruluk: " + gps.location.getAccuracy());
                             gidenVeriSayisi = gidenVeriSayisi + 1;
                             _tvHiz.setText(String.format("%.1f", gps.location.getSpeed()));
-                            _tvGPSPozisyon.setText(String.format("%.3f", gps.location.getLatitude()) + " | " + String.format("%.3f", gps.location.getLongitude()));
+                            _tvGPSPozisyon.setText(String.format("%.6f", gps.location.getLatitude()) + " | " + String.format("%.6f", gps.location.getLongitude()));
                             _tvStatus.setVisibility(View.VISIBLE);
-                            _tvStatus.setText("VERİ GÖNDERİLİYOR");
-
-/*
-                            konusucu.trackCal();
-                            konusucu.clearListe();
-*/
 
                         } else if (routeId < 0) {
                             _tvStatus.setText("Rota Bilgisi Alınamıyor");
@@ -267,7 +283,7 @@ public class MainActivity extends ActionBarActivity {
                 }
             }
             /////////////////Her koşulda çalışacak olan bölüm////////////////
-            iterasyonSayisi = iterasyonSayisi + 1;
+            iterasyonSayisi++;
             _tvSayac.setText(iterasyonSayisi + "," + gidenVeriSayisi);
             ///////////////////////////////////////////////////////////////////
         }
