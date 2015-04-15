@@ -170,13 +170,17 @@ public class MainActivity extends ActionBarActivity {
         }
 
         //eger kullanıcı adı yok ise Init acalım ve kullanıcı adı oluşturalım
-        if (sp.kullaniciAdiGetir().isEmpty() || sp.cihazIdGetir()==0) {
-            Init init = new Init();
-            Intent tetik = new Intent(MainActivity.this, init.getClass());
-            startActivity(tetik);
-            Init2 init2 = new Init2();
-            Intent tetik2 = new Intent(MainActivity.this, init2.getClass());
-            startActivity(tetik2);
+        if (sp.kullaniciAdiGetir().isEmpty()) {
+            {
+                Init init = new Init();
+                Intent tetik = new Intent(MainActivity.this, init.getClass());
+                startActivity(tetik);
+            }
+            if (sp.cihazIdGetir() == 0) {
+                Init2 init2 = new Init2();
+                Intent tetik2 = new Intent(MainActivity.this, init2.getClass());
+                startActivity(tetik2);
+            }
         }
 
         jsp = new JSONProvider<>();
@@ -229,6 +233,8 @@ public class MainActivity extends ActionBarActivity {
                         else konumParametre = 2;
                         fm = new FollowMe();
                         fm.setEvent(konumParametre);
+                        _tvStatus.setText("HASSASİYET YETERLİ DEĞİL, GPS HASSASİYETİ BEKLENİYOR");
+                        konusucu.trackCal(R.raw.warning);
                         if ( gps.location != null && routeId > 0 && gps.locationGetir().getAccuracy() < sp.accuarcyGetir() ) {
                             fm.setLat(gps.locationGetir().getLatitude());
                             fm.setLng(gps.locationGetir().getLongitude());
@@ -268,7 +274,6 @@ public class MainActivity extends ActionBarActivity {
                             }
                             /********************/
 
-                            _dogruluk.setText("Doğruluk: " + gps.location.getAccuracy());
                             gidenVeriSayisi = gidenVeriSayisi + 1;
                             _tvHiz.setText(String.format("%.1f", gps.location.getSpeed()));
                             _tvGPSPozisyon.setText(String.format("%.6f", gps.location.getLatitude()) + " | " + String.format("%.6f", gps.location.getLongitude()));
@@ -279,6 +284,7 @@ public class MainActivity extends ActionBarActivity {
                         } else if (routeId == 0) {
                             _tvStatus.setText("Rota Bilgisi İçin Gerekli Bilgiler Hatalı");
                         }
+                        _dogruluk.setText("Doğruluk: " + gps.location.getAccuracy());
                     }
                 }
             }
