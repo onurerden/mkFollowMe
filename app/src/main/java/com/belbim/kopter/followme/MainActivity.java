@@ -148,9 +148,11 @@ public class MainActivity extends ActionBarActivity {
                     _tvHiz.setText("---");
                     _tvStatus.setTextColor(Color.parseColor("#000000"));
                     _tvStatus.setText("GÖNDERİM DURDURULDU");
-                    konusucu.addListe(R.raw.activity);
-                    konusucu.addListe(R.raw.stopped);
-                    konusucu.trackCal();
+                    if (routeId>0) {
+                        konusucu.addListe(R.raw.activity);
+                        konusucu.addListe(R.raw.stopped);
+                        konusucu.trackCal();
+                    }
 
                     gps.durdur(); // gps update lerini durdur
                 }
@@ -283,6 +285,7 @@ public class MainActivity extends ActionBarActivity {
                         } else if (routeId == 0) {
                             _tvStatus.setText("Rota Bilgisi İçin Gerekli Bilgiler Hatalı");
                         } else {
+                            _tvStatus.setVisibility(View.VISIBLE);
                             _tvStatus.setText("Yeterli GPS Hassasiyeti Bekleniyor!");
                             konusucu.trackCal(R.raw.warning);
                         }
