@@ -233,8 +233,7 @@ public class MainActivity extends ActionBarActivity {
                         else konumParametre = 2;
                         fm = new FollowMe();
                         fm.setEvent(konumParametre);
-                        _tvStatus.setText("HASSASİYET YETERLİ DEĞİL, GPS HASSASİYETİ BEKLENİYOR");
-                        konusucu.trackCal(R.raw.warning);
+
                         if ( gps.location != null && routeId > 0 && gps.locationGetir().getAccuracy() < sp.accuarcyGetir() ) {
                             fm.setLat(gps.locationGetir().getLatitude());
                             fm.setLng(gps.locationGetir().getLongitude());
@@ -283,6 +282,9 @@ public class MainActivity extends ActionBarActivity {
                             _tvStatus.setText("Rota Bilgisi Alınamıyor");
                         } else if (routeId == 0) {
                             _tvStatus.setText("Rota Bilgisi İçin Gerekli Bilgiler Hatalı");
+                        } else {
+                            _tvStatus.setText("Yeterli GPS Hassasiyeti Bekleniyor!");
+                            konusucu.trackCal(R.raw.warning);
                         }
                         _dogruluk.setText("Doğruluk: " + gps.location.getAccuracy());
                     }
