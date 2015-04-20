@@ -44,7 +44,7 @@ public class IDeviceServerImpl extends HttpConnectionProvider implements IDevice
             qparams.add((new BasicNameValuePair("routeId", "" + routeId)));
             String queryParameters = URLEncodedUtils.format(qparams, "UTF-8");
 
-            AsyncTask<String, String, String> execute = new AsyncTaskClass().execute(OperationConfig.JsonActionList.getRouteId.toString(), queryParameters);
+            AsyncTask<String, String, String> execute = new AsyncTaskClass().execute(OperationConfig.JsonActionList.endRoute.toString(), queryParameters);
             return Integer.valueOf(execute.get());
 
         } catch (Exception e) {

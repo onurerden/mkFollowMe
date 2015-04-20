@@ -27,6 +27,7 @@ import java.io.FileOutputStream;
 
 public class MainActivity extends ActionBarActivity {
 
+    private static long back_pressed;
     TextView _tvGPSPozisyon;
     TextView _tvStatus;
     TextView _tvSayac;
@@ -39,19 +40,40 @@ public class MainActivity extends ActionBarActivity {
     int iterasyonSayisi = 0;
     int gidenVeriSayisi = 0;
     int routeId = 0;
-    int gonderimdurumu=-1;
+    int gonderimdurumu = -1;
     Intent intentGPSTracker;
-    FileOutputStream outputStream;
     ////////////////////
-
+    FileOutputStream outputStream;
     SharedPrefBilgisi sp;
     GPSTracker gps;
     IDeviceServerImpl ids;
     Handler mHandler = new Handler();
-    private static long back_pressed;
     Konus konusucu;
     FollowMe fm;
     JSONProvider<FollowMe> jsp;
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ConnectivityManager cnnMgr = (ConnectivityManager) context.getSystemService(context.CONNECTIVITY_SERVICE);
+
+            NetworkInfo wifiInfo = cnnMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+            NetworkInfo mobileInfo = cnnMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+
+            InitInfo.getInstance().setMobileDataEnabled(mobileInfo.isAvailable());
+            InitInfo.getInstance().setMobileEdgeOr3G(mobileInfo.getSubtype());
+            InitInfo.getInstance().setMobileConnected(mobileInfo.isConnected());
+            InitInfo.getInstance().setWifiEnabled(wifiInfo.isAvailable());
+
+            if (mobileInfo.isConnected() && wifiInfo.isConnected()) {
+                InitInfo.getInstance().setInited(false);
+                swAktivasyon.setChecked(false);
+            }
+
+            if (!gps.gpsEnabledGetir()) {
+                swAktivasyon.setChecked(false);
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +118,7 @@ public class MainActivity extends ActionBarActivity {
                 if (_rgParametre.getCheckedRadioButtonId() == R.id.rbFollowMe)
                     konusucu.trackCal(R.raw.follow_me);
                 else konusucu.trackCal(R.raw.look_at_me);
-           }
+            }
         });
 
         swAktivasyon.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -109,9 +131,18 @@ public class MainActivity extends ActionBarActivity {
 
                         if (routeId == 0 || sp.rotaSecenegiGetir()) {
                             routeId = ids.getRouteId(sp.cihazIdGetir());
+                            switch (routeId) {
+                                case 0:
+                                    tvRota.setText("Async Task Hatası");
+                                    break;
+                                case -1:
+                                    tvRota.setText("DB Erişim Hatası");
+                                case -2:
+                                    tvRota.setText("Cihaz ID si yanlış:" + sp.cihazIdGetir());
+                                default:
+                                    tvRota.setText("ROTA:" + routeId);
+                            }
                         }
-                        tvRota.setText("ROTA:" + routeId);
-
                         /*try {
                             outputStream = openFileOutput(routeId + ".gpx", Context.MODE_APPEND);
                         } catch (Exception e) {
@@ -119,9 +150,8 @@ public class MainActivity extends ActionBarActivity {
                         }*/
                         mHandler.postDelayed(mUpdateTimeTask, 100); //isInited ve cihazID alınmış ise handler başlar
 
-                      } else {
+                    } else {
                         _tvStatus.setText("BAĞLANTI HAZIR DEĞİL");
-                        konusucu.trackCal(R.raw.preparing_connection);
 
                         Init2 init2 = new Init2();
                         Intent tetik = new Intent(MainActivity.this, init2.getClass());
@@ -130,9 +160,13 @@ public class MainActivity extends ActionBarActivity {
                 } else { //eğer switch off olursa
                     mHandler.removeCallbacks(mUpdateTimeTask); //Handler i durdurur
 
-                    if (routeId>0 && gidenVeriSayisi >0){ //rotayı sonlandırır
-                        int endRouteStatus= ids.endRoute(routeId);
-                        if (endRouteStatus==1) {tvRota.setText("Rota Sonlandırıldı");} else {tvRota.setText("Rota Sonlandırmada Hata!");}
+                    if (routeId > 0 && gidenVeriSayisi > 0) { //rotayı sonlandırır
+                        int endRouteStatus = ids.endRoute(routeId);
+                        if (endRouteStatus == 1) {
+                            tvRota.setText("Rota Sonlandırıldı");
+                        } else {
+                            tvRota.setText("Rota Sonlandırmada Hata!");
+                        }
                     }
 /*
                     try {                       // dosyayı sonlandırır
@@ -148,12 +182,6 @@ public class MainActivity extends ActionBarActivity {
                     _tvHiz.setText("---");
                     _tvStatus.setTextColor(Color.parseColor("#000000"));
                     _tvStatus.setText("GÖNDERİM DURDURULDU");
-                    if (routeId>0) {
-                        konusucu.addListe(R.raw.activity);
-                        konusucu.addListe(R.raw.stopped);
-                        konusucu.trackCal();
-                    }
-
                     gps.durdur(); // gps update lerini durdur
                 }
             }
@@ -167,22 +195,21 @@ public class MainActivity extends ActionBarActivity {
 
     protected void onResume() {
         super.onResume();
-        if (InitInfo.getInstance().isInited()) {
-            swAktivasyon.setChecked(true);
+        Init2 init2 = new Init2();
+        Intent tetik2 = new Intent(MainActivity.this, init2.getClass());
+
+        if (!InitInfo.getInstance().isInited()) {
+            startActivity(tetik2);
         }
 
         //eger kullanıcı adı yok ise Init acalım ve kullanıcı adı oluşturalım
         if (sp.kullaniciAdiGetir().isEmpty()) {
-            {
-                Init init = new Init();
-                Intent tetik = new Intent(MainActivity.this, init.getClass());
-                startActivity(tetik);
-            }
-            if (sp.cihazIdGetir() == 0) {
-                Init2 init2 = new Init2();
-                Intent tetik2 = new Intent(MainActivity.this, init2.getClass());
-                startActivity(tetik2);
-            }
+            Init init = new Init();
+            Intent tetik = new Intent(MainActivity.this, init.getClass());
+            startActivity(tetik);
+        }
+        if (sp.cihazIdGetir() == 0) {
+            startActivity(tetik2);
         }
 
         jsp = new JSONProvider<>();
@@ -191,22 +218,15 @@ public class MainActivity extends ActionBarActivity {
 
     protected void onPause() {
         super.onPause();
-        swAktivasyon.setChecked(false);
+        InitInfo.getInstance().setInited(false);
     }
 
     private Runnable mUpdateTimeTask = new Runnable() {
         public void run() {
 
             if (!gps.gpsEnabledGetir()) {
-//                /////////////////Butonu Kapatır////////////////
                 swAktivasyon.setChecked(false);
-//                //////////////////////////////////////////////
-
                 _tvSayac.setText("GPS ETKIN DEGIL");
-                konusucu.clearListe();
-                konusucu.addListe(R.raw.gps);
-                konusucu.addListe(R.raw.disabled_please_enable);
-                konusucu.trackCal();
                 _tvSayac.setTextColor(Color.parseColor("#FF0000"));
                 mHandler.removeCallbacks(mUpdateTimeTask);
 
@@ -218,9 +238,6 @@ public class MainActivity extends ActionBarActivity {
 
                 if (!gps.gpsKilitlendiMi()) {
                     _tvStatus.setText("GPS ARANIYOR");
-                    konusucu.addListe(R.raw.gps);
-                    konusucu.addListe(R.raw.searching);
-                    konusucu.trackCal();
 
                     if (_tvStatus.getVisibility() == View.VISIBLE) {
                         _tvStatus.setVisibility(View.INVISIBLE);
@@ -236,15 +253,15 @@ public class MainActivity extends ActionBarActivity {
                         fm = new FollowMe();
                         fm.setEvent(konumParametre);
 
-                        if ( gps.location != null && routeId > 0 && gps.locationGetir().getAccuracy() < sp.accuarcyGetir() ) {
+                        if (gps.location != null && routeId > 0 && gps.locationGetir().getAccuracy() < sp.accuarcyGetir()) {
                             fm.setLat(gps.locationGetir().getLatitude());
                             fm.setLng(gps.locationGetir().getLongitude());
                             fm.setFollowMeDeviceId(sp.cihazIdGetir());
                             fm.setRouteId(routeId);
                             fm.setSessionId(InitInfo.getInstance().getMkSession().getSessionId());
-                            gonderimdurumu=ids.sendFollowMeData(jsp.entityToJson(fm));
+                            gonderimdurumu = ids.sendFollowMeData(jsp.entityToJson(fm));
 
-                            switch (gonderimdurumu){
+                            switch (gonderimdurumu) {
                                 case 0:
                                     _tvStatus.setTextColor(Color.parseColor("#FF00AAFF"));
                                     _tvStatus.setText("VERİ GÖNDERİLİYOR");
@@ -280,10 +297,6 @@ public class MainActivity extends ActionBarActivity {
                             _tvGPSPozisyon.setText(String.format("%.6f", gps.location.getLatitude()) + " | " + String.format("%.6f", gps.location.getLongitude()));
                             _tvStatus.setVisibility(View.VISIBLE);
 
-                        } else if (routeId < 0) {
-                            _tvStatus.setText("Rota Bilgisi Alınamıyor");
-                        } else if (routeId == 0) {
-                            _tvStatus.setText("Rota Bilgisi İçin Gerekli Bilgiler Hatalı");
                         } else {
                             _tvStatus.setVisibility(View.VISIBLE);
                             _tvStatus.setText("Yeterli GPS Hassasiyeti Bekleniyor!");
@@ -297,30 +310,6 @@ public class MainActivity extends ActionBarActivity {
             iterasyonSayisi++;
             _tvSayac.setText(iterasyonSayisi + "," + gidenVeriSayisi);
             ///////////////////////////////////////////////////////////////////
-        }
-    };
-
-    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            ConnectivityManager cnnMgr = (ConnectivityManager) context.getSystemService(context.CONNECTIVITY_SERVICE);
-
-            NetworkInfo wifiInfo = cnnMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-            NetworkInfo mobileInfo = cnnMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-
-            InitInfo.getInstance().setMobileDataEnabled(mobileInfo.isAvailable());
-            InitInfo.getInstance().setMobileEdgeOr3G(mobileInfo.getSubtype());
-            InitInfo.getInstance().setMobileConnected(mobileInfo.isConnected());
-            InitInfo.getInstance().setWifiEnabled(wifiInfo.isAvailable());
-
-            if (mobileInfo.isConnected() && wifiInfo.isConnected()) {
-                InitInfo.getInstance().setInited(false);
-                swAktivasyon.setChecked(false);
-            }
-
-            if (!gps.gpsEnabledGetir()) {
-                swAktivasyon.setChecked(false);
-            }
         }
     };
 
@@ -361,4 +350,6 @@ public class MainActivity extends ActionBarActivity {
             Toast.makeText(getBaseContext(), "Çıkmak istediğinizden emin misiniz?", Toast.LENGTH_SHORT).show();
         back_pressed = System.currentTimeMillis();
     }
+
+
 }

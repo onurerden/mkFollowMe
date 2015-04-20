@@ -15,45 +15,25 @@ public class Swipe extends Activity {
     int maxImageX;
     RelativeLayout mRelativeMain;
     RelativeLayout.LayoutParams iVParams;
-    Konus konusucu;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_swipe);
-        m_ivImage = (ImageView) findViewById(R.id.imageView1);
-        m_ivImage.setOnTouchListener(m_onTouchListener);
-        mRelativeMain = (RelativeLayout) findViewById(R.id.RelativeMain);
-        iVParams= (RelativeLayout.LayoutParams)m_ivImage.getLayoutParams();
-        imageWidth = m_ivImage.getWidth();
-        konusucu = new Konus(getApplicationContext());
-    }
-
-    View.OnTouchListener m_onTouchListener = new View.OnTouchListener(){
+    View.OnTouchListener m_onTouchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             imageWidth = m_ivImage.getWidth();
-            switch (event.getAction()){
+            switch (event.getAction()) {
 
                 case MotionEvent.ACTION_DOWN:
                     m_lastTouchX = event.getX();
                     //imajın genişliği ve gidebileceği max mesafe tespit ediliyor.
-                    maxImageX= mRelativeMain.getWidth()-imageWidth;
+                    maxImageX = mRelativeMain.getWidth() - imageWidth;
                     break;
 
                 case MotionEvent.ACTION_UP:
-                    konusucu.clearListe();
-                    konusucu.addListe(R.raw.activated);
-                    konusucu.addListe(R.raw.gps);
-                    konusucu.addListe(R.raw.information);
-                    konusucu.addListe(R.raw.sending);
-                    konusucu.trackCal();
 
-                    if (m_posX>mRelativeMain.getWidth()/2){
+                    if (m_posX > mRelativeMain.getWidth() / 2) {
                         iVParams.setMargins(maxImageX, 0, 0, 0);
                         m_ivImage.setImageResource(R.drawable.swipe_left);
                     }
-                    if (m_posX<mRelativeMain.getWidth()/2 ){
+                    if (m_posX < mRelativeMain.getWidth() / 2) {
                         iVParams.setMargins(0, 0, 0, 0);
                         m_ivImage.setImageResource(R.drawable.swipe_right);
                     }
@@ -63,15 +43,28 @@ public class Swipe extends Activity {
                     m_dx = event.getX() - m_lastTouchX;
                     m_posX = m_prevX + m_dx;
 
-                        if (m_posX < maxImageX) {
-                            iVParams.setMargins((int) m_posX, 0, 0, 0);
-                        }
+                    if (m_posX < maxImageX) {
+                        iVParams.setMargins((int) m_posX, 0, 0, 0);
+                    }
                     v.setLayoutParams(iVParams);
                     m_prevX = m_posX;
 
-                break;
+                    break;
             }
             return true;
         }
     };
+    Konus konusucu;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_swipe);
+        m_ivImage = (ImageView) findViewById(R.id.imageView1);
+        m_ivImage.setOnTouchListener(m_onTouchListener);
+        mRelativeMain = (RelativeLayout) findViewById(R.id.RelativeMain);
+        iVParams = (RelativeLayout.LayoutParams) m_ivImage.getLayoutParams();
+        imageWidth = m_ivImage.getWidth();
+        konusucu = new Konus(getApplicationContext());
+    }
 }

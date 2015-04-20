@@ -38,15 +38,28 @@ public class Init2 extends Activity {
     IDeviceServerImpl ids;
     String androidID;
     Account[] accounts;
-    private Handler handler;
     IntentFilter filters;
     JSONProvider<MKSession> jp;
+    View.OnTouchListener mOnTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            ekranKontrolleriniAyarla();
+            return true;
+        }
+    };
+    private Handler handler;
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ekranKontrolleriniAyarla();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_init2);
-        sp=new SharedPrefBilgisi(Init2.this);
+        sp = new SharedPrefBilgisi(Init2.this);
         pb = (ProgressBar) findViewById(R.id.progressBar);
 
 
@@ -57,28 +70,27 @@ public class Init2 extends Activity {
         ids = new IDeviceServerImpl();
         androidID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        parametreAyarLayout= findViewById(R.id.parametreAyarLayout);
+        parametreAyarLayout = findViewById(R.id.parametreAyarLayout);
         ivWifi = (ImageView) findViewById(R.id.ivWifi);
         ivMobilAg = (ImageView) findViewById(R.id.ivMobilAg);
         ivMobilAgBaglanti = (ImageView) findViewById(R.id.ivMobilAgBaglanti);
         ivMobileEdgeOr3g = (ImageView) findViewById(R.id.ivMobileEdgeOr3G);
         ivServerKayit = (ImageView) findViewById(R.id.ivServerKayit);
         ivServerDokunus = (ImageView) findViewById(R.id.ivDokunus);
-        tvLabel= (TextView) findViewById(R.id.tvLabel);
+        tvLabel = (TextView) findViewById(R.id.tvLabel);
 
 
         filters = new IntentFilter();
         filters.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
     }
 
-    protected void onPause(){
+    protected void onPause() {
         super.onPause();
         super.unregisterReceiver(mBroadcastReceiver);
         tvLabel.setVisibility(View.VISIBLE);
     }
 
-
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
         super.registerReceiver(mBroadcastReceiver, filters);
         parametreAyarLayout.setOnTouchListener(mOnTouchListener);
@@ -89,27 +101,6 @@ public class Init2 extends Activity {
         InitInfo.getInstance().setInited(true);
         finish();
     }
-
-    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            ekranKontrolleriniAyarla();
-        }
-    };
-
-    View.OnTouchListener mOnTouchListener = new View.OnTouchListener(){
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            new Thread() {
-                @Override
-                public void run() {
-                    ekranKontrolleriniAyarla();
-                }
-            }.start();
-
-            return true;
-        }
-    };
 
     public void ekranKontrolleriniAyarla(){
         tvLabel.setVisibility(View.INVISIBLE);

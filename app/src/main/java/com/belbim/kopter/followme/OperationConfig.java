@@ -5,6 +5,10 @@ package com.belbim.kopter.followme;
 public  class OperationConfig {
     public static String host = "mk-onurerden.rhcloud.com";
 
+    public void SetHost(String hostUrl){
+        this.host = hostUrl;
+    }
+
     public static enum JsonActionList {
         touchServer("/mkWS/TouchServer"),
         registerDevice("/mkWS/RegisterDevice"),
@@ -13,7 +17,8 @@ public  class OperationConfig {
         sendFollowMeData("/mkWS/SendFollowMeData"),
         getKopterStatus("/mkWS/GetKopterStatus"),
         getRegisteredData("mkWS/GetRegisteredData"),
-        getRouteId("mkWS/getRouteId");
+        getRouteId("mkWS/getRouteId"),
+        endRoute("mkWS/EndRoute");
 
         private final String text;
 
@@ -26,9 +31,5 @@ public  class OperationConfig {
         public String toString() {
             return text;
         }
-    }
-
-    public void SetHost(String hostUrl){
-        this.host=hostUrl;
     }
 }
