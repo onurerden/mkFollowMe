@@ -4,13 +4,16 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 public class Swipe extends Activity {
 
-    ImageView m_ivImage ;
-    float m_lastTouchX, m_dx,m_posX,m_prevX ;
+    ImageView m_ivImage;
+    float m_lastTouchX, m_dx, m_posX, m_prevX;
     int imageWidth;
     int maxImageX;
     RelativeLayout mRelativeMain;
@@ -28,7 +31,6 @@ public class Swipe extends Activity {
                     break;
 
                 case MotionEvent.ACTION_UP:
-
                     if (m_posX > mRelativeMain.getWidth() / 2) {
                         iVParams.setMargins(maxImageX, 0, 0, 0);
                         m_ivImage.setImageResource(R.drawable.swipe_left);
@@ -54,6 +56,9 @@ public class Swipe extends Activity {
             return true;
         }
     };
+    EditText etLogVerisi;
+    TextView tvLogSonucu;
+    NumberPicker mNumberPicker;
     Konus konusucu;
 
     @Override
@@ -66,5 +71,16 @@ public class Swipe extends Activity {
         iVParams = (RelativeLayout.LayoutParams) m_ivImage.getLayoutParams();
         imageWidth = m_ivImage.getWidth();
         konusucu = new Konus(getApplicationContext());
+        etLogVerisi = (EditText) findViewById(R.id.etLogVerisi);
+        tvLogSonucu = (TextView) findViewById(R.id.tvLogSonucu);
+        mNumberPicker = (NumberPicker) findViewById(R.id.numberPicker);
+
+
+    }
+
+    public void logGonder(View view) {
+        tvLogSonucu.setText("");
+        tvLogSonucu.setText(SendLog.getInstance().send(mNumberPicker.getValue(), etLogVerisi.getText().toString()) + "");
+        etLogVerisi.setText("");
     }
 }

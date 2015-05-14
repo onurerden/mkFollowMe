@@ -1,13 +1,6 @@
 package com.belbim.kopter.followme;
 
-import android.accounts.Account;
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -32,14 +25,13 @@ public class Init2 extends Activity {
     Button button;
     TextView tvLabel;
     ProgressBar pb;
+    Handler mHandler;
 
     SharedPrefBilgisi sp;
     int registerDeviceState;
     IDeviceServerImpl ids;
     String androidID;
-    Account[] accounts;
-    IntentFilter filters;
-    JSONProvider<MKSession> jp;
+    JSONProvider<MKSession> mJSP;
     View.OnTouchListener mOnTouchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
@@ -47,10 +39,10 @@ public class Init2 extends Activity {
             return true;
         }
     };
-    private Handler handler;
-    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+    private Runnable mUpdateTimeTask = new Runnable() {
+
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void run() {
             ekranKontrolleriniAyarla();
         }
     };
@@ -61,9 +53,10 @@ public class Init2 extends Activity {
         setContentView(R.layout.activity_init2);
         sp = new SharedPrefBilgisi(Init2.this);
         pb = (ProgressBar) findViewById(R.id.progressBar);
+        pb.setMax(100);
 
 
-        jp = new JSONProvider<>();
+        mJSP = new JSONProvider<>();
         button = (Button) findViewById(R.id.button);
         button.setVisibility(View.INVISIBLE);
         sp.cihazIdYaz(-1);
@@ -78,23 +71,19 @@ public class Init2 extends Activity {
         ivServerKayit = (ImageView) findViewById(R.id.ivServerKayit);
         ivServerDokunus = (ImageView) findViewById(R.id.ivDokunus);
         tvLabel = (TextView) findViewById(R.id.tvLabel);
-
-
-        filters = new IntentFilter();
-        filters.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
     }
 
     protected void onPause() {
         super.onPause();
-        super.unregisterReceiver(mBroadcastReceiver);
         tvLabel.setVisibility(View.VISIBLE);
     }
 
     protected void onResume() {
         super.onResume();
-        super.registerReceiver(mBroadcastReceiver, filters);
         parametreAyarLayout.setOnTouchListener(mOnTouchListener);
         tvLabel.setVisibility(View.INVISIBLE);
+        mHandler = new Handler();
+        mHandler.postDelayed(mUpdateTimeTask, 2000);
     }
 
     public void devamEt(View view) {
@@ -102,33 +91,46 @@ public class Init2 extends Activity {
         finish();
     }
 
-    public void ekranKontrolleriniAyarla(){
+    public void ekranKontrolleriniAyarla() {
         tvLabel.setVisibility(View.INVISIBLE);
         pb.setProgress(0);
-        ConnectivityManager cnnMgr = (ConnectivityManager)this.getSystemService((this.CONNECTIVITY_SERVICE));
 
-        NetworkInfo wifiInfo = cnnMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        NetworkInfo mobileInfo = cnnMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-
-        InitInfo.getInstance().setMobileDataEnabled(mobileInfo.isAvailable());
-        InitInfo.getInstance().setMobileEdgeOr3G(mobileInfo.getSubtype());
-        InitInfo.getInstance().setMobileConnected(mobileInfo.isConnected());
-        InitInfo.getInstance().setWifiEnabled(wifiInfo.isAvailable());
-
-        if (mobileInfo.isAvailable()){ ivMobilAg.setImageResource(R.drawable.tick); }else { ivMobilAg.setImageResource(R.drawable.cross); }
-        if (mobileInfo.getSubtype()== TelephonyManager.NETWORK_TYPE_GPRS || mobileInfo.getSubtype()== TelephonyManager.NETWORK_TYPE_EDGE){ivMobileEdgeOr3g.setImageResource(R.drawable.warning);}else {ivMobileEdgeOr3g.setImageResource(R.drawable.tick);}
-
-        if (!sp.wifiCheckGetir()){
-            if(wifiInfo.isAvailable()){ivWifi.setImageResource(R.drawable.cross);}else {ivWifi.setImageResource(R.drawable.tick);}
-        }else {
-            if (wifiInfo.isAvailable()) {ivWifi.setImageResource(R.drawable.warning);} else {ivWifi.setImageResource(R.drawable.tick);}
+        if (InitInfo.getInstance().getMobileDataEnabled()) {
+            ivMobilAg.setImageResource(R.drawable.tick);
+        } else {
+            ivMobilAg.setImageResource(R.drawable.cross);
+        }
+        if (InitInfo.getInstance().getMobileEdgeOr3G() == TelephonyManager.NETWORK_TYPE_GPRS || InitInfo.getInstance().getMobileEdgeOr3G() == TelephonyManager.NETWORK_TYPE_EDGE) {
+            ivMobileEdgeOr3g.setImageResource(R.drawable.warning);
+        } else {
+            ivMobileEdgeOr3g.setImageResource(R.drawable.tick);
         }
 
-        if (mobileInfo.isConnected()){ivMobilAgBaglanti.setImageResource(R.drawable.tick);}else if(sp.wifiCheckGetir()){ivMobilAgBaglanti.setImageResource(R.drawable.warning);} else {ivMobilAgBaglanti.setImageResource(R.drawable.cross);}
+        if (!sp.wifiCheckGetir()) {
+            if (InitInfo.getInstance().getWifiAvailable()) {
+                ivWifi.setImageResource(R.drawable.cross);
+            } else {
+                ivWifi.setImageResource(R.drawable.tick);
+            }
+        } else {
+            if (InitInfo.getInstance().getWifiAvailable()) {
+                ivWifi.setImageResource(R.drawable.warning);
+            } else {
+                ivWifi.setImageResource(R.drawable.tick);
+            }
+        }
 
-        if (mobileInfo.isConnected() || wifiInfo.isConnected()  ){
+        if (InitInfo.getInstance().getMobileConnected()) {
+            ivMobilAgBaglanti.setImageResource(R.drawable.tick);
+        } else if (sp.wifiCheckGetir()) {
+            ivMobilAgBaglanti.setImageResource(R.drawable.warning);
+        } else {
+            ivMobilAgBaglanti.setImageResource(R.drawable.cross);
+        }
 
-            InitInfo.getInstance().setMkSession(jp.jsonToEntity(ids.touchServer(androidID, DeviceType.MOBILE_DEVICE.getCode()), MKSession.class));
+        if (InitInfo.getInstance().getMobileConnected() || InitInfo.getInstance().getWifiConnected()) {
+
+            InitInfo.getInstance().setMkSession(mJSP.jsonToEntity(ids.touchServer(androidID, DeviceType.MOBILE_DEVICE.getCode()), MKSession.class));
 
             switch (InitInfo.getInstance().getMkSession().getDeviceId()) {
                 case -1:
@@ -155,7 +157,7 @@ public class Init2 extends Activity {
                     } else {
                         ivServerKayit.setImageResource(R.drawable.tick);
 
-                        InitInfo.getInstance().setMkSession(jp.jsonToEntity(ids.touchServer(androidID, DeviceType.MOBILE_DEVICE.getCode())));
+                        InitInfo.getInstance().setMkSession(mJSP.jsonToEntity(ids.touchServer(androidID, DeviceType.MOBILE_DEVICE.getCode())));
                     }
                     break;
                 default:
@@ -166,27 +168,26 @@ public class Init2 extends Activity {
             }
         }
 
-        if (!sp.wifiCheckGetir()){
-            if (mobileInfo.isConnected() && InitInfo.getInstance().getMkSession().getDeviceId()>-1){
+        if (!sp.wifiCheckGetir()) {
+            if (InitInfo.getInstance().getMobileConnected() && InitInfo.getInstance().getMkSession().getDeviceId() > -1) {
                 button.setVisibility(View.VISIBLE);
-              //  devamEt(button);
-            }
-            else {
+                mHandler.removeCallbacks(mUpdateTimeTask);
+                pb.setVisibility(View.INVISIBLE);
+
+            } else {
                 button.setVisibility(View.INVISIBLE);
                 Alarm wifiAyarAlarm = new Alarm(" Wifi Ayarı", "Lütfen Wifi Kapatınız", "Wifi Ayarları", "İptal", Settings.ACTION_WIFI_SETTINGS);
                 wifiAyarAlarm.showAlarm(Init2.this);
             }
-        }
-
-        else {
-            if ((mobileInfo.isConnected() || wifiInfo.isConnected())&& InitInfo.getInstance().getMkSession().getDeviceId()>-1 ){
+        } else {
+            if ((InitInfo.getInstance().getMobileConnected() || InitInfo.getInstance().getWifiConnected()) && InitInfo.getInstance().getMkSession().getDeviceId() > -1) {
                 button.setVisibility(View.VISIBLE);
-                pb.setProgress(100);
-              //  devamEt(button);
-            }
-            else {
+                pb.setVisibility(View.INVISIBLE);
+                mHandler.removeCallbacks(mUpdateTimeTask);
+
+            } else {
                 button.setVisibility(View.INVISIBLE);
-                Alarm wifiAyarAlarm = new Alarm(" HATA!!!", "Bağlantı Yok yada Sunucudan Düzgün Yanıt Alınamadı,\r\n Uygulama Geliştirici ile irtibat kurunuz.", "", "TAMAM:(","");
+                Alarm wifiAyarAlarm = new Alarm(" HATA!!!", "Bağlantı Yok yada Sunucudan Düzgün Yanıt Alınamadı,\r\n Uygulama Geliştirici ile irtibat kurunuz.", "", "TAMAM:(", "");
                 wifiAyarAlarm.showAlarm(Init2.this);
                 tvLabel.setVisibility(View.VISIBLE);
                 pb.setVisibility(View.INVISIBLE);
@@ -194,6 +195,7 @@ public class Init2 extends Activity {
         }
 
     }
+
 
 
 

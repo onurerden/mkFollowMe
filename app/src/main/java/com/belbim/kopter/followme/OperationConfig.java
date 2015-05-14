@@ -9,6 +9,10 @@ public  class OperationConfig {
         this.host = hostUrl;
     }
 
+    public String getHost() {
+        return this.host;
+    }
+
     public static enum JsonActionList {
         touchServer("/mkWS/TouchServer"),
         registerDevice("/mkWS/RegisterDevice"),
@@ -18,6 +22,7 @@ public  class OperationConfig {
         getKopterStatus("/mkWS/GetKopterStatus"),
         getRegisteredData("mkWS/GetRegisteredData"),
         getRouteId("mkWS/getRouteId"),
+        sendLog("mkWS/SendLog"),
         endRoute("mkWS/EndRoute");
 
         private final String text;

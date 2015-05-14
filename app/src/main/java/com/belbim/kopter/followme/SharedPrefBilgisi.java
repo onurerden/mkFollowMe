@@ -7,32 +7,60 @@ import android.content.SharedPreferences;
  * Created by eakbiyik on 26.12.2014.
  */
 public class SharedPrefBilgisi {
-    private static SharedPreferences mSharedPrefs ;
-
-//    private static SharedPrefBilgisi instance = null;
-
-  /*  public static synchronized SharedPrefBilgisi getInstance(Context mContext) {
-        if (instance == null) {
-            instance = new SharedPrefBilgisi(mContext);
-        }
-        return instance;
-    }*/
+    static SharedPreferences mSharedPrefs;
+    static int mGuncellemePeriyodu;
+    static int mCihazID;
+    static boolean mRotaSecenegi;
+    static int mAccuarcy;
+    static boolean mWifiCheck;
+    static int mGPSupdatePeriodmilis;
+    static String mKullaniciAdi;
+    static OperationConfig mOperationConfig;
 
     public SharedPrefBilgisi(Context mContext){
         mSharedPrefs= mContext.getSharedPreferences("Degerler.xml", mContext.MODE_PRIVATE);
-        OperationConfig.host = serverUrlGetir();
+        mOperationConfig = new OperationConfig();
+        populate();
+    }
+
+    public void populate() {
+        this.mGuncellemePeriyodu = mSharedPrefs.getInt("guncelleme_periyodu", 5000);
+        this.mOperationConfig.SetHost(mSharedPrefs.getString("server_url", "mk-onurerden.rhcloud.com"));
+        this.mCihazID = mSharedPrefs.getInt("cihazId", -1);
+        this.mRotaSecenegi = mSharedPrefs.getBoolean("rotaSecenegi", false);
+        this.mAccuarcy = mSharedPrefs.getInt("accuarcy", 20);
+        this.mWifiCheck = mSharedPrefs.getBoolean("wifiCheck", false);
+        this.mGPSupdatePeriodmilis = mSharedPrefs.getInt("updatePeriodmilis", 2000);
+        this.mKullaniciAdi = mSharedPrefs.getString("kullaniciAdi", "");
+
     }
 
     public int guncellemePeriyoduGetir(){
-        int guncellemePeriyodu;
-        guncellemePeriyodu=mSharedPrefs.getInt("guncelleme_periyodu",5000);
-        return guncellemePeriyodu;
+        return this.mGuncellemePeriyodu;
     }
 
-    public String serverUrlGetir(){
-        String serverURL;
-        serverURL=mSharedPrefs.getString("server_url", "mk-onurerden.rhcloud.com");
-        return serverURL;
+    public int cihazIdGetir() {
+        return this.mCihazID;
+    }
+
+    public boolean rotaSecenegiGetir() {
+        return this.mRotaSecenegi;
+    }
+
+    public int accuarcyGetir() {
+        return this.mAccuarcy;
+    }
+
+    public boolean wifiCheckGetir() {
+        return this.mWifiCheck;
+    }
+
+    public int GPSupdatePeriodmilisGetir() {
+        return this.mGPSupdatePeriodmilis;
+    }
+
+    public String kullaniciAdiGetir() {
+        return this.mKullaniciAdi;
     }
 
     public void guncellemePeriyoduYaz(int periyod) {
@@ -45,13 +73,11 @@ public class SharedPrefBilgisi {
         SharedPreferences.Editor editor = mSharedPrefs.edit();
         editor.putString("server_url", uRL);
         editor.commit();
-        OperationConfig.host = uRL;
+        mOperationConfig.SetHost(uRL);
     }
 
-    public int cihazIdGetir(){
-        int cihazId;
-        cihazId=mSharedPrefs.getInt("cihazId",-1);
-        return cihazId;
+    public String serverUrlGetir() {
+        return mOperationConfig.getHost();
     }
 
     public void cihazIdYaz(int cihazId) {
@@ -60,24 +86,10 @@ public class SharedPrefBilgisi {
         editor.commit();
     }
 
-    public boolean rotaSecenegiGetir(){
-        boolean rotaSecenegi;
-        rotaSecenegi=mSharedPrefs.getBoolean("rotaSecenegi",false);
-        return rotaSecenegi;
-    }
-
     public void rotaSecenegiYaz(boolean rotaSecenegi){
         SharedPreferences.Editor editor=mSharedPrefs.edit();
         editor.putBoolean("rotaSecenegi",rotaSecenegi);
         editor.commit();
-    }
-
-
-
-    public int accuarcyGetir(){
-        int accuarcy;
-        accuarcy=mSharedPrefs.getInt("accuarcy",20);
-        return accuarcy;
     }
 
     public void accuarcyYaz(int accuarcy){
@@ -86,22 +98,10 @@ public class SharedPrefBilgisi {
         editor.commit();
     }
 
-    public boolean wifiCheckGetir(){
-        boolean wifiCheck;
-        wifiCheck=mSharedPrefs.getBoolean("wifiCheck",false);
-        return wifiCheck;
-    }
-
     public void wifiCheckYaz(boolean wifiCheck){
         SharedPreferences.Editor editor=mSharedPrefs.edit();
         editor.putBoolean("wifiCheck",wifiCheck);
         editor.commit();
-    }
-
-    public int GPSupdatePeriodmilisGetir(){
-        int updatePeriodmilisGetir;
-        updatePeriodmilisGetir=mSharedPrefs.getInt("updatePeriodmilis",2000);
-        return updatePeriodmilisGetir;
     }
 
     public void GPSupdatePeriodmilisYaz(int updatePeriodmilisGetir){
@@ -116,9 +116,5 @@ public class SharedPrefBilgisi {
         editor.commit();
     }
 
-    public String kullaniciAdiGetir() {
-        String kullaniciAdi;
-        kullaniciAdi= mSharedPrefs.getString("kullaniciAdi", "");
-        return kullaniciAdi;
-    }
+
 }

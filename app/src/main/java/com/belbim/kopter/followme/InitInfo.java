@@ -4,15 +4,17 @@ package com.belbim.kopter.followme;
  * Created by eakbiyik on 29.12.2014.
  */
 public class InitInfo {
+    private static InitInfo instance = null;
     /*InitInfo değişkenleri*/
     public boolean isMobileDataEnabled;
-    public int mobileEdgeOr3G ;
+    public int mobileEdgeOr3G;
     public boolean isMobileConnected;
-    public boolean isWifiEnabled;
-    public boolean isInited=false;
-    public MKSession mkSession=null;
-
-    private static InitInfo instance = null;
+    public boolean wifiAvailable;
+    public boolean isInited = false;
+    public MKSession mkSession = null;
+    boolean gpsKilitlendiMi = false;
+    boolean GPSAcikMi = false;
+    boolean wifiConnected = false;
 
     private InitInfo() {
     }
@@ -24,7 +26,7 @@ public class InitInfo {
         return instance;
     }
 
-    public boolean isMobileDataEnabled() {
+    public boolean getMobileDataEnabled() {
         return isMobileDataEnabled;
     }
 
@@ -40,7 +42,7 @@ public class InitInfo {
         this.mobileEdgeOr3G = mobileEdgeOr3G;
     }
 
-    public boolean isMobileConnected() {
+    public boolean getMobileConnected() {
         return isMobileConnected;
     }
 
@@ -48,12 +50,12 @@ public class InitInfo {
         this.isMobileConnected = isMobileConnected;
     }
 
-    public boolean isWifiEnabled() {
-        return isWifiEnabled;
+    public boolean getWifiAvailable() {
+        return wifiAvailable;
     }
 
-    public void setWifiEnabled(boolean isWifiEnabled) {
-        this.isWifiEnabled = isWifiEnabled;
+    public void setWifiAvailable(boolean isWifiAvailable) {
+        this.wifiAvailable = isWifiAvailable;
     }
 
     public boolean isInited() {
@@ -64,11 +66,35 @@ public class InitInfo {
         this.isInited = isInited;
     }
 
-    public void setMkSession(MKSession mMkSession){
-        this.mkSession=mMkSession;
+    public MKSession getMkSession() {
+        return mkSession;
     }
 
-    public MKSession getMkSession(){
-        return mkSession;
+    public void setMkSession(MKSession mMkSession) {
+        this.mkSession = mMkSession;
+    }
+
+    public boolean getGpsKilitlendiMi() {
+        return gpsKilitlendiMi;
+    }
+
+    public void setGpsKilitlendiMi(boolean mGpsKilitlendiMi) {
+        this.gpsKilitlendiMi = mGpsKilitlendiMi;
+    }
+
+    public void setGpsKAcikMi(boolean mGpsAcikMi) {
+        this.GPSAcikMi = mGpsAcikMi;
+    }
+
+    public boolean getGpsAcikMi() {
+        return GPSAcikMi;
+    }
+
+    public boolean getWifiConnected() {
+        return wifiConnected;
+    }
+
+    public void setWifiConnected(boolean WifiConnected) {
+        this.wifiConnected = WifiConnected;
     }
 }

@@ -17,16 +17,16 @@ public class IDeviceServerImpl extends HttpConnectionProvider implements IDevice
 
     @Override
     public int getRouteId(int deviceId) {
-        try{
-            List<NameValuePair> qparams= new ArrayList<NameValuePair>();
-            qparams.add((new BasicNameValuePair("deviceId", ""+deviceId)));
+        try {
+            List<NameValuePair> qparams = new ArrayList<NameValuePair>();
+            qparams.add((new BasicNameValuePair("deviceId", "" + deviceId)));
 
-            String queryParameters = URLEncodedUtils.format(qparams,"UTF-8");
+            String queryParameters = URLEncodedUtils.format(qparams, "UTF-8");
 
-            AsyncTask<String,String,String> execute = new AsyncTaskClass().execute(OperationConfig.JsonActionList.getRouteId.toString(),queryParameters);
+            AsyncTask<String, String, String> execute = new AsyncTaskClass().execute(OperationConfig.JsonActionList.getRouteId.toString(), queryParameters);
 
             return Integer.valueOf(execute.get());
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return 0;
         }
@@ -34,14 +34,28 @@ public class IDeviceServerImpl extends HttpConnectionProvider implements IDevice
 
     @Override
     public int sendLog(String logJson) {
-        return 0;
+        try {
+            List<NameValuePair> qparams = new ArrayList<NameValuePair>();
+            qparams.add(new BasicNameValuePair("logJson", logJson));
+
+            String queryParamters = URLEncodedUtils.format(qparams, "UTF-8");
+
+            AsyncTask<String, String, String> execute = new AsyncTaskClass().execute(OperationConfig.JsonActionList.sendLog.toString(), queryParamters);
+
+            String ss = execute.get();
+
+            return Integer.valueOf(ss);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -3;
+        }
     }
 
     @Override
     public int endRoute(int routeId) {
         try {
             List<NameValuePair> qparams = new ArrayList<NameValuePair>();
-            qparams.add((new BasicNameValuePair("routeId", "" + routeId)));
+            qparams.add(new BasicNameValuePair("routeId", "" + routeId));
             String queryParameters = URLEncodedUtils.format(qparams, "UTF-8");
 
             AsyncTask<String, String, String> execute = new AsyncTaskClass().execute(OperationConfig.JsonActionList.endRoute.toString(), queryParameters);
@@ -173,3 +187,4 @@ public class IDeviceServerImpl extends HttpConnectionProvider implements IDevice
 
     }
 }
+

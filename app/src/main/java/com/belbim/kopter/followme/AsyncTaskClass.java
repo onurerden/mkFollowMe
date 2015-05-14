@@ -19,9 +19,6 @@ public class AsyncTaskClass extends AsyncTask<String, String, String> {
     protected String doInBackground(String... strings) {
 
         try {
-            //Context mContext=new ContextWrapper(MainActivity.this);
-            //SharedPrefBilgisi mSharedPref = new SharedPrefBilgisi(mContext);
-
 
             URI uri = URIUtils.createURI("http", OperationConfig.host, -1, strings[0], strings[1], null);
             HttpGet httpget = new HttpGet(uri);
@@ -34,6 +31,7 @@ public class AsyncTaskClass extends AsyncTask<String, String, String> {
 
             return send;
         } catch (Exception e) {
+            SendLog.getInstance().send(1, e.getMessage().toString());
             e.printStackTrace();
             return null;
         }
