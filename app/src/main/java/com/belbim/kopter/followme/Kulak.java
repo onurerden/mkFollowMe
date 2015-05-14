@@ -13,7 +13,6 @@ import android.util.Log;
 public class Kulak extends BroadcastReceiver {
 
     public Kulak(Context mContext, Intent mIntent) {
-        InitInfo.getInstance().setGpsKilitlendiMi(true);
         onReceive(mContext, mIntent);
     }
 

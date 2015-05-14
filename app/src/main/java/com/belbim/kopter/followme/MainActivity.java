@@ -74,7 +74,6 @@ public class MainActivity extends ActionBarActivity {
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         intentFilter.addAction("android.net.wifi.WIFI_STATE_CHANGED");
         intentFilter.addAction("android.location.PROVIDERS_CHANGED");
-        //intentFilter.addAction("android.location.GPS_FIX_CHANGE");
         registerReceiver(mKulak, intentFilter);
 
     }
@@ -192,6 +191,9 @@ public class MainActivity extends ActionBarActivity {
             startActivity(tetik);
         }
         jsp = new JSONProvider<>();
+        if (InitInfo.getInstance().isInited()) {
+            swAktivasyon.setChecked(true);
+        }
     }
 
     protected void onPause() {
@@ -204,6 +206,22 @@ public class MainActivity extends ActionBarActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            Intent tetik = new Intent(MainActivity.this, ParametreAyar.class);
+            startActivity(tetik);
+            return true;
+        }
+        if (id == R.id.action_swipe) {
+            Intent tetik = new Intent(MainActivity.this, Swipe.class);
+            startActivity(tetik);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private Runnable mUpdateTimeTask = new Runnable() {
@@ -238,13 +256,18 @@ public class MainActivity extends ActionBarActivity {
                         fm = new FollowMe();
                         fm.setEvent(konumParametre);
 
-                        if (gps.location != null && routeId > 0 && gps.locationGetir().getAccuracy() < sp.accuarcyGetir()) {
+                        if (gps.locationGetir() != null && routeId > 0 && gps.locationGetir().getAccuracy() < sp.accuarcyGetir()) {
                             fm.setLat(gps.locationGetir().getLatitude());
                             fm.setLng(gps.locationGetir().getLongitude());
                             fm.setFollowMeDeviceId(sp.cihazIdGetir());
                             fm.setRouteId(routeId);
                             fm.setSessionId(InitInfo.getInstance().getMkSession().getSessionId());
+                            /*Thread mThread = new Thread(){
+                                @Override
+                            public void run (){ */
                             gonderimdurumu = ids.sendFollowMeData(jsp.entityToJson(fm));
+                              /*  }
+                            }; */
 
                             switch (gonderimdurumu) {
                                 case 0:
@@ -306,24 +329,8 @@ public class MainActivity extends ActionBarActivity {
     };
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            Intent tetik = new Intent(MainActivity.this, ParametreAyar.class);
-            startActivity(tetik);
-            return true;
-        }
-        if (id == R.id.action_swipe) {
-            Intent tetik = new Intent(MainActivity.this, Swipe.class);
-            startActivity(tetik);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
+    public void onDestroy() {
+        super.onDestroy();
         gps.durdur();
         unregisterReceiver(mKulak);
         this.stopService(intentGPSTracker);
@@ -334,7 +341,7 @@ public class MainActivity extends ActionBarActivity {
     public void onBackPressed() {
         if (back_pressed + 2000 > System.currentTimeMillis()) super.onBackPressed();
         else
-            Toast.makeText(getBaseContext(), "Çıkmak istediğinizden emin misiniz?", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), "Çıkmak için tekrar dokunun!", Toast.LENGTH_SHORT).show();
         back_pressed = System.currentTimeMillis();
     }
 

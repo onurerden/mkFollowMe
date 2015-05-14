@@ -29,16 +29,14 @@ public class GPSTracker extends Service implements LocationListener {
     }
 
     public Location locationGetir() {
+        try {
+            locMan = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
+            return location;
 
-try {
-    locMan = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
-    return location;
-
-}catch (Exception ex){
-
-    ex.printStackTrace();
-    return null;
-}
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 
     @Override
@@ -51,11 +49,11 @@ try {
     public void onStatusChanged(String provider, int status, Bundle extras) {
         gpsAcikMi = locMan.isProviderEnabled(LocationManager.GPS_PROVIDER);
         InitInfo.getInstance().setGpsKAcikMi(gpsAcikMi);
+        InitInfo.getInstance().setGpsKilitlendiMi(false);
     }
 
     @Override
     public void onProviderEnabled(String provider) {
-
         gpsAcikMi = locMan.isProviderEnabled(LocationManager.GPS_PROVIDER);
         InitInfo.getInstance().setGpsKAcikMi(gpsAcikMi);
 
@@ -63,7 +61,6 @@ try {
 
     @Override
     public void onProviderDisabled(String provider) {
-
         gpsAcikMi = locMan.isProviderEnabled(LocationManager.GPS_PROVIDER);
         InitInfo.getInstance().setGpsKAcikMi(gpsAcikMi);
     }

@@ -18,12 +18,18 @@ public class SendLog {
     }
 
     public int send(int logLevel, String logMessage) {
-        this.mLogMessage.setDeviceId(InitInfo.getInstance().getMkSession().getDeviceId());
-        this.mLogMessage.setDeviceType(DeviceType.MOBILE_DEVICE.getCode());
-        this.mLogMessage.setLogLevel(logLevel);
-        this.mLogMessage.setLogMessage(logMessage);
-        JSONProvider<LogMessage> jsp = new JSONProvider<>();
-        IDeviceServerImpl ids = new IDeviceServerImpl();
-        return ids.sendLog(jsp.entityToJson(mLogMessage));
+        int result = -1;
+        try {
+            this.mLogMessage.setDeviceId(InitInfo.getInstance().getMkSession().getDeviceId());
+            this.mLogMessage.setDeviceType(DeviceType.MOBILE_DEVICE.getCode());
+            this.mLogMessage.setLogLevel(logLevel);
+            this.mLogMessage.setLogMessage(logMessage);
+            JSONProvider<LogMessage> jsp = new JSONProvider<>();
+            IDeviceServerImpl ids = new IDeviceServerImpl();
+            result = ids.sendLog(jsp.entityToJson(mLogMessage));
+        } catch (Exception ex) {
+            result = -2;
+        }
+        return result;
     }
 }

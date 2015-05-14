@@ -1,5 +1,7 @@
 package com.belbim.kopter.followme;
+
 import android.os.AsyncTask;
+
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIUtils;
 
@@ -17,9 +19,7 @@ public class AsyncTaskClass extends AsyncTask<String, String, String> {
 
     @Override
     protected String doInBackground(String... strings) {
-
         try {
-
             URI uri = URIUtils.createURI("http", OperationConfig.host, -1, strings[0], strings[1], null);
             HttpGet httpget = new HttpGet(uri);
             System.out.println(httpget.getURI());
@@ -31,7 +31,7 @@ public class AsyncTaskClass extends AsyncTask<String, String, String> {
 
             return send;
         } catch (Exception e) {
-            SendLog.getInstance().send(1, e.getMessage().toString());
+            //SendLog.getInstance().send(1, "AsyncTask Hatası (doInBackGround):"+ e.getMessage().toString());
             e.printStackTrace();
             return null;
         }
