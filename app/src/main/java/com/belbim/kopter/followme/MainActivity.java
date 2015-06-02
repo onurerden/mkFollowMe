@@ -30,6 +30,7 @@ public class MainActivity extends ActionBarActivity {
     TextView _tvSayac;
     TextView _tvHiz;
     TextView tvRota;
+    TextView tvSure;
     Switch swAktivasyon;
     RadioGroup _rgParametre;
     TextView _dogruluk;
@@ -42,6 +43,7 @@ public class MainActivity extends ActionBarActivity {
     Intent intentGPSTracker;
     Intent intentKulak;
     Intent intentBroadCast;
+    int sure = 0;
 
     FileOutputStream outputStream;
     SharedPrefBilgisi sp;
@@ -63,6 +65,11 @@ public class MainActivity extends ActionBarActivity {
         ids = new IDeviceServerImpl();
         konusucu = new Konus(getApplicationContext());
 
+    }
+
+    protected void onStart() {
+        super.onStart();
+
         intentGPSTracker = new Intent(this, GPSTracker.class);
         this.startService(intentGPSTracker);
 
@@ -76,14 +83,10 @@ public class MainActivity extends ActionBarActivity {
         intentFilter.addAction("android.location.PROVIDERS_CHANGED");
         registerReceiver(mKulak, intentFilter);
 
-    }
-
-    protected void onStart() {
-        super.onStart();
-
         gps = new GPSTracker(this);
 
         /////////////////////////GUI nin tanımlanması////////////////
+        tvSure = (TextView) findViewById(R.id.tvSure);
         _tvGPSPozisyon = (TextView) findViewById(R.id.tvGPSPozisyon);
         _tvSayac = (TextView) findViewById(R.id.tvSayac);
         swAktivasyon = (Switch) findViewById(R.id._swAktivasyon);
@@ -128,6 +131,8 @@ public class MainActivity extends ActionBarActivity {
                                 default:
                                     tvRota.setText("ROTA:" + routeId);
                             }
+                        } else {
+                            tvRota.setText("ROTA:" + routeId);
                         }
                         /*try {
                             outputStream = openFileOutput(routeId + ".gpx", Context.MODE_APPEND);
@@ -224,6 +229,16 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        gps.durdur();
+        unregisterReceiver(mKulak);
+        this.stopService(intentGPSTracker);
+        this.stopService(intentBroadCast);
+
+    }
+
     private Runnable mUpdateTimeTask = new Runnable() {
         public void run() {
 
@@ -237,10 +252,11 @@ public class MainActivity extends ActionBarActivity {
                 gpsAyarGoster.showAlarm(MainActivity.this);
 
             } else {
-                mHandler.postDelayed(this, sp.guncellemePeriyoduGetir());
+                //mHandler.postDelayed(this, sp.guncellemePeriyoduGetir()); //bunun yerine ilk mesajın sonucu gelince başlatıyorum.gonderim durumu na taşıyorum
 
                 if (!InitInfo.getInstance().getGpsKilitlendiMi()) {
                     _tvStatus.setText("GPS ARANIYOR");
+                    mHandler.postDelayed(this, sp.guncellemePeriyoduGetir());
 
                     if (_tvStatus.getVisibility() == View.VISIBLE) {
                         _tvStatus.setVisibility(View.INVISIBLE);
@@ -262,18 +278,21 @@ public class MainActivity extends ActionBarActivity {
                             fm.setFollowMeDeviceId(sp.cihazIdGetir());
                             fm.setRouteId(routeId);
                             fm.setSessionId(InitInfo.getInstance().getMkSession().getSessionId());
-                            /*Thread mThread = new Thread(){
+
+                            Thread mThread = new Thread() {
                                 @Override
-                            public void run (){ */
+                                public void run() {
+                                    say();
+                                }
+                            };
                             gonderimdurumu = ids.sendFollowMeData(jsp.entityToJson(fm));
-                              /*  }
-                            }; */
 
                             switch (gonderimdurumu) {
                                 case 0:
                                     _tvStatus.setTextColor(Color.parseColor("#FF00AAFF"));
                                     _tvStatus.setText("VERİ GÖNDERİLİYOR");
                                     gidenVeriSayisi++;
+                                    mHandler.postDelayed(this, sp.guncellemePeriyoduGetir());
                                     break;
                                 case -1:
                                     _tvStatus.setTextColor(Color.parseColor("#FF0000"));
@@ -281,6 +300,7 @@ public class MainActivity extends ActionBarActivity {
                                     SendLog.getInstance().send(1, "Mesaj goderim durumu -1, DB Erisim Hatasi");
                                     konusucu.trackCal(R.raw.warning);
                                     hataliVeriSayisi++;
+                                    mHandler.postDelayed(this, sp.guncellemePeriyoduGetir());
                                     break;
                                 case -2:
                                     _tvStatus.setTextColor(Color.parseColor("#FF0000"));
@@ -288,6 +308,7 @@ public class MainActivity extends ActionBarActivity {
                                     SendLog.getInstance().send(1, "Mesaj gonderim durumu -2, Hatali Veri");
                                     konusucu.trackCal(R.raw.warning);
                                     hataliVeriSayisi++;
+                                    mHandler.postDelayed(this, sp.guncellemePeriyoduGetir());
                                     break;
                                 case -3:
                                     _tvStatus.setTextColor(Color.parseColor("#FF0000"));
@@ -295,9 +316,16 @@ public class MainActivity extends ActionBarActivity {
                                     SendLog.getInstance().send(1, "Mesaj gonderim durumu -3, Async Task Exception");
                                     konusucu.trackCal(R.raw.warning);
                                     hataliVeriSayisi++;
+                                    mHandler.postDelayed(this, sp.guncellemePeriyoduGetir());
                                     break;
                             }
+                            tvSure.setText("Süre:" + sure);
+                            say_sifirla();
+/*
+                                }
+                            };
 
+*/
                             /*DOSYAYA YAZAN BÖLÜM
                             try {
                                 String yazilacakMetin = gps.locationGetir().getTime() + ":" + gps.locationGetir().getLatitude() + ":" + gps.locationGetir().getLongitude() + ":" + gps.locationGetir().getAltitude() + "\r\n";
@@ -316,6 +344,7 @@ public class MainActivity extends ActionBarActivity {
                             _tvStatus.setText("Yeterli GPS Hassasiyeti Bekleniyor!");
                             SendLog.getInstance().send(2, "GPS Dogrulugu dusuk:" + gps.location.getAccuracy());
                             konusucu.trackCal(R.raw.warning);
+                            mHandler.postDelayed(this, sp.guncellemePeriyoduGetir());
                         }
                         _dogruluk.setText("Doğruluk: " + gps.location.getAccuracy());
                     }
@@ -329,21 +358,29 @@ public class MainActivity extends ActionBarActivity {
     };
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        gps.durdur();
-        unregisterReceiver(mKulak);
-        this.stopService(intentGPSTracker);
-        this.stopService(intentBroadCast);
-    }
-
-    @Override
     public void onBackPressed() {
         if (back_pressed + 2000 > System.currentTimeMillis()) super.onBackPressed();
         else
             Toast.makeText(getBaseContext(), "Çıkmak için tekrar dokunun!", Toast.LENGTH_SHORT).show();
         back_pressed = System.currentTimeMillis();
     }
+
+    private void say() {
+        while (true) {
+            sure++;
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void say_sifirla() {
+        sure = 0;
+    }
+
+
 
 
 }

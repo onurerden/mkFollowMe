@@ -1,155 +1,166 @@
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:keepScreenOn="true"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity"
-    android:id="@+id/main_layout"
-    android:keepScreenOn="true">
+    tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/tvStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="DURUM - PASİF"
-        android:id="@+id/tvStatus"
-        android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:textStyle="bold"
-        android:textSize="14pt"
+        android:gravity="center_horizontal"
+        android:text="DURUM - PASİF"
         android:textAlignment="center"
-        android:gravity="center_horizontal" />
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="KONUM BİLGİSİ:"
-        android:id="@+id/tvlblGpsPozisyon"
-        android:layout_marginTop="80dp"
-        android:textColor="#000000"
-        android:layout_centerHorizontal="true"
-        android:layout_alignTop="@+id/tvStatus" />
+        android:textSize="14pt"
+        android:textStyle="bold" />
+
 
     <TextView
+        android:id="@+id/tvlblGpsPozisyon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="- - - -   - - - -"
+        android:layout_alignTop="@+id/tvStatus"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
+        android:text="KONUM BİLGİSİ:"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#000000" />
+
+    <TextView
         android:id="@+id/tvGPSPozisyon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/tvlblGpsPozisyon"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:text="- - - -   - - - -"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
-        <RadioGroup
-    android:layout_width="wrap_content"
-    android:layout_height="120dp"
-    android:id="@+id/rgRadioGroup"
-    android:checkedButton="@+id/rbFollowMe"
-    android:layout_below="@+id/tvGPSPozisyon"
-    android:layout_centerHorizontal="true"
-            android:backgroundTintMode="add"
-            android:baselineAligned="false">
-
-    <RadioButton
+    <RadioGroup
+        android:id="@+id/rgRadioGroup"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="FOLLOW ME"
-        android:id="@+id/rbFollowMe"
-        android:layout_marginTop="17dp"
-        android:layout_alignTop="@+id/rgRadioGroup"
-        android:layout_toLeftOf="@+id/tvGPSPozisyon"
-        android:layout_toStartOf="@+id/tvGPSPozisyon"
-        android:textSize="24dp"
-        android:checked="false" />
+        android:layout_height="120dp"
+        android:layout_below="@+id/tvGPSPozisyon"
+        android:layout_centerHorizontal="true"
+        android:backgroundTintMode="add"
+        android:baselineAligned="false"
+        android:checkedButton="@+id/rbFollowMe">
 
-            <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="LOOK AT ME"
-        android:id="@+id/rbLookAtMe"
-        android:layout_marginTop="23dp"
-        android:layout_below="@+id/rbFollowMe"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:checked="false"
-        android:textSize="24dp" />
+        <RadioButton
+            android:id="@+id/rbFollowMe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/rgRadioGroup"
+            android:layout_marginTop="17dp"
+            android:layout_toLeftOf="@+id/tvGPSPozisyon"
+            android:layout_toStartOf="@+id/tvGPSPozisyon"
+            android:checked="false"
+            android:text="FOLLOW ME"
+            android:textSize="24dp" />
 
-</RadioGroup>
+        <RadioButton
+            android:id="@+id/rbLookAtMe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/rbFollowMe"
+            android:layout_marginTop="23dp"
+            android:checked="false"
+            android:text="LOOK AT ME"
+            android:textSize="24dp" />
 
+    </RadioGroup>
 
 
     <Switch
+        android:id="@+id/_swAktivasyon"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:text="KONUM"
-        android:id="@+id/_swAktivasyon"
-        android:checked="false"
         android:layout_below="@+id/tvSayac"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="34dp"
-        android:textSize="24dp"
-        android:onClick="setListFooter"
+        android:checked="false"
         android:clickable="false"
         android:elegantTextHeight="false"
-        android:enabled="true" />
+        android:enabled="true"
+        android:onClick="setListFooter"
+        android:text="KONUM"
+        android:textSize="24dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="SAYAC / GİDEN VERİ"
-            android:id="@+id/tvSayac"
-            android:layout_marginTop="20dp"
-            android:layout_below="@+id/rgRadioGroup"
-            android:layout_centerHorizontal="true" />
+    <TextView
+        android:id="@+id/tvSayac"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rgRadioGroup"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="SAYAC / GİDEN VERİ"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Doğruluk"
-            android:id="@+id/tvdogruluk"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true" />
+    <TextView
+        android:id="@+id/tvdogruluk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="Doğruluk"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
-        <Space
-            android:layout_width="200dp"
-            android:layout_height="100dp"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/_swAktivasyon"
-            android:layout_marginTop="15dp"
-            android:id="@+id/spaceHiz" />
+    <Space
+        android:id="@+id/spaceHiz"
+        android:layout_width="200dp"
+        android:layout_height="100dp"
+        android:layout_below="@+id/_swAktivasyon"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0"
-            android:id="@+id/tvHiz"
-            android:textSize="90dp"
-            android:textAlignment="center"
-            android:layout_alignTop="@+id/spaceHiz"
-            android:layout_centerHorizontal="true" />
+    <TextView
+        android:id="@+id/tvHiz"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/spaceHiz"
+        android:layout_centerHorizontal="true"
+        android:text="0"
+        android:textAlignment="center"
+        android:textSize="90dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="m/sn"
-            android:id="@+id/tvmsn"
-            android:layout_alignBaseline="@+id/spaceHiz"
-            android:layout_alignParentEnd="false"
-            android:layout_alignBottom="@+id/spaceHiz"
-            android:layout_alignEnd="@id/spaceHiz"
-            android:layout_alignParentStart="false" />
+    <TextView
+        android:id="@+id/tvmsn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/spaceHiz"
+        android:layout_alignBottom="@+id/spaceHiz"
+        android:layout_alignEnd="@id/spaceHiz"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentStart="false"
+        android:text="m/sn"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="----"
-            android:id="@+id/tvRota"
-            android:layout_below="@+id/tvSayac"
-            android:layout_centerHorizontal="true" />
+    <TextView
+        android:id="@+id/tvRota"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvSayac"
+        android:layout_centerHorizontal="true"
+        android:text="----"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
-    </RelativeLayout>
+    <TextView
+        android:id="@+id/tvSure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tvdogruluk"
+        android:layout_centerHorizontal="true"
+        android:text="---"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+</RelativeLayout>

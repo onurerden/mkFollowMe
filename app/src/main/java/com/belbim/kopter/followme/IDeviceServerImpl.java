@@ -77,7 +77,7 @@ public class IDeviceServerImpl extends HttpConnectionProvider implements IDevice
 
             String queryParamters = URLEncodedUtils.format(qparams, "UTF-8");
 
-            AsyncTask<String, String, String> execute = new AsyncTaskClass().execute(OperationConfig.JsonActionList.touchServer.toString(), queryParamters);
+            AsyncTask<String, String, String> execute = new AsyncTaskClass().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, OperationConfig.JsonActionList.touchServer.toString(), queryParamters);
             return execute.get();
         } catch (Exception e) {
             e.printStackTrace();
@@ -96,7 +96,7 @@ public class IDeviceServerImpl extends HttpConnectionProvider implements IDevice
 
             String queryParamters = URLEncodedUtils.format(qparams, "UTF-8");
 
-            AsyncTask<String, String, String> execute = new AsyncTaskClass().execute(OperationConfig.JsonActionList.registerDevice.toString(), queryParamters);
+            AsyncTask<String, String, String> execute = new AsyncTaskClass().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, OperationConfig.JsonActionList.registerDevice.toString(), queryParamters);
 
             return Integer.valueOf(execute.get());
         } catch (Exception e) {
@@ -169,6 +169,7 @@ public class IDeviceServerImpl extends HttpConnectionProvider implements IDevice
             return -3;
         }
     }
+
 
     @Override
     public String getFollowMeData(int deviceId) {
