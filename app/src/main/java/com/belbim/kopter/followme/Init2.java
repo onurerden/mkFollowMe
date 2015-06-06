@@ -40,13 +40,6 @@ public class Init2 extends Activity {
     IDeviceServerImpl ids;
     String androidID;
     JSONProvider<MKSession> mJSP;
-    View.OnTouchListener mOnTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            pb.setVisibility(View.VISIBLE);
-            return true;
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +72,14 @@ public class Init2 extends Activity {
         mGUIUpdateReceiver = new GUIUpdateReceiver();
     }
 
+    View.OnTouchListener mOnTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            mHandler.postDelayed(mRun, 500);
+            return true;
+        }
+    };
+
     protected void onPause() {
         super.onPause();
         tvLabel.setVisibility(View.VISIBLE);
@@ -93,7 +94,6 @@ public class Init2 extends Activity {
         tvLabel.setVisibility(View.INVISIBLE);
         button.setVisibility(View.INVISIBLE);
         pb.setProgress(0);
-        tvLabel.setVisibility(View.INVISIBLE);
         mHandler.postDelayed(mRun, 500);
         tvYuzde.setText("%0");
     }
@@ -103,33 +103,34 @@ public class Init2 extends Activity {
         finish();
     }
 
+    private void beklet() {
+        try {
+            Thread.sleep(300);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     public class GUIUpdateReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent mIntent) {
             switch (mIntent.getStringExtra("Progress")) {
                 case "01": //Mobil ag açık mı kontrolü
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    beklet();
                     if (InitInfo.getInstance().getMobileDataEnabled()) {
                         ivMobilAg.setImageResource(R.drawable.tick);
                         pb.setProgress(1);
                         tvYuzde.setText("%" + pb.getProgress() * 100 / pb.getMax());
-                        GUIUpdateIntent.putExtra("Progress", "02");
-                        sendBroadcast(GUIUpdateIntent);
+
                     } else {
                         ivMobilAg.setImageResource(R.drawable.cross);
                     }
+                    GUIUpdateIntent.putExtra("Progress", "02");
+                    sendBroadcast(GUIUpdateIntent);
                     break;
                 case "02": //Mobil ağ Tip Kontrolü
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    beklet();
                     if (InitInfo.getInstance().getMobileEdgeOr3G() == TelephonyManager.NETWORK_TYPE_GPRS || InitInfo.getInstance().getMobileEdgeOr3G() == TelephonyManager.NETWORK_TYPE_EDGE) {
                         ivMobileEdgeOr3g.setImageResource(R.drawable.warning);
                     } else {
@@ -141,11 +142,7 @@ public class Init2 extends Activity {
                     sendBroadcast(GUIUpdateIntent);
                     break;
                 case "03": //Wifi kontrolü
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    beklet();
                     if (!sp.wifiCheckGetir()) {
                         if (InitInfo.getInstance().getWifiAvailable()) {
                             ivWifi.setImageResource(R.drawable.cross);
@@ -169,11 +166,7 @@ public class Init2 extends Activity {
                     }
                     break;
                 case "04": //Mobil data bağlı mı
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    beklet();
                     if (InitInfo.getInstance().getMobileConnected()) {
                         ivMobilAgBaglanti.setImageResource(R.drawable.tick);
                         pb.setProgress(4);
@@ -201,7 +194,7 @@ public class Init2 extends Activity {
                                 MKSession mMKSession = new MKSession();
                                 mMKSession.setDeviceId(-4);  //aşağıdaki switch case e değişken gondermek için -4 diye set ettim.
                                 InitInfo.getInstance().setMkSession(mMKSession);
-                                SendLog.getInstance().send(1, "Touch Serverdan gelen JSON  Sessiona dönüşmedi" + serverDokunus);
+                                SendLog.getInstance().logla(1, "Touch Serverdan gelen JSON  Sessiona dönüşmedi" + serverDokunus);
                                 Log.e("TouchServer Hatasi", "Touch Serverdan gelen JSON  Sessiona dönüşmedi" + serverDokunus);
                             }
 
@@ -240,6 +233,7 @@ public class Init2 extends Activity {
                                     break;
                                 default:
                                     ivServerKayit.setImageResource(R.drawable.tick);
+                                    beklet();
                                     ivServerDokunus.setImageResource(R.drawable.tick);
                                     sp.cihazIdYaz(InitInfo.getInstance().getMkSession().getDeviceId());
                                     pb.setProgress(5);
@@ -258,11 +252,7 @@ public class Init2 extends Activity {
                     }
                     break;
                 case "06":
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    beklet();
                     if (!sp.wifiCheckGetir()) {
                         if (InitInfo.getInstance().getMobileConnected() && InitInfo.getInstance().getMkSession().getDeviceId() > -1) {
                             button.setVisibility(View.VISIBLE);

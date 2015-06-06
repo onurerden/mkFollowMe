@@ -17,8 +17,8 @@ public class SharedPrefBilgisi {
     static String mKullaniciAdi;
     static OperationConfig mOperationConfig;
 
-    public SharedPrefBilgisi(Context mContext){
-        mSharedPrefs= mContext.getSharedPreferences("Degerler.xml", mContext.MODE_PRIVATE);
+    public SharedPrefBilgisi(Context mContext) {
+        mSharedPrefs = mContext.getSharedPreferences("Degerler.xml", mContext.MODE_PRIVATE);
         mOperationConfig = new OperationConfig();
         populate();
     }
@@ -35,7 +35,7 @@ public class SharedPrefBilgisi {
 
     }
 
-    public int guncellemePeriyoduGetir(){
+    public int guncellemePeriyoduGetir() {
         return this.mGuncellemePeriyodu;
     }
 
@@ -63,6 +63,10 @@ public class SharedPrefBilgisi {
         return this.mKullaniciAdi;
     }
 
+    public void guncellemePeriyoduGuncelle(int period) {
+        this.mGuncellemePeriyodu = period;
+    }
+
     public void guncellemePeriyoduYaz(int periyod) {
         SharedPreferences.Editor editor = mSharedPrefs.edit();
         editor.putInt("guncelleme_periyodu", periyod);
@@ -86,32 +90,32 @@ public class SharedPrefBilgisi {
         editor.commit();
     }
 
-    public void rotaSecenegiYaz(boolean rotaSecenegi){
-        SharedPreferences.Editor editor=mSharedPrefs.edit();
-        editor.putBoolean("rotaSecenegi",rotaSecenegi);
+    public void rotaSecenegiYaz(boolean rotaSecenegi) {
+        SharedPreferences.Editor editor = mSharedPrefs.edit();
+        editor.putBoolean("rotaSecenegi", rotaSecenegi);
         editor.commit();
     }
 
-    public void accuarcyYaz(int accuarcy){
-        SharedPreferences.Editor editor=mSharedPrefs.edit();
-        editor.putInt("accuarcy",accuarcy);
+    public void accuarcyYaz(int accuarcy) {
+        SharedPreferences.Editor editor = mSharedPrefs.edit();
+        editor.putInt("accuarcy", accuarcy);
         editor.commit();
     }
 
-    public void wifiCheckYaz(boolean wifiCheck){
-        SharedPreferences.Editor editor=mSharedPrefs.edit();
-        editor.putBoolean("wifiCheck",wifiCheck);
+    public void wifiCheckYaz(boolean wifiCheck) {
+        SharedPreferences.Editor editor = mSharedPrefs.edit();
+        editor.putBoolean("wifiCheck", wifiCheck);
         editor.commit();
     }
 
-    public void GPSupdatePeriodmilisYaz(int updatePeriodmilisGetir){
-        SharedPreferences.Editor editor=mSharedPrefs.edit();
-        editor.putInt("updatePeriodmilis",updatePeriodmilisGetir);
+    public void GPSupdatePeriodmilisYaz(int updatePeriodmilisGetir) {
+        SharedPreferences.Editor editor = mSharedPrefs.edit();
+        editor.putInt("updatePeriodmilis", updatePeriodmilisGetir);
         editor.commit();
     }
 
     public void kullaniciAdiYaz(String mKullaniciAdi) {
-        SharedPreferences.Editor editor=mSharedPrefs.edit();
+        SharedPreferences.Editor editor = mSharedPrefs.edit();
         editor.putString("kullaniciAdi", mKullaniciAdi);
         editor.commit();
     }

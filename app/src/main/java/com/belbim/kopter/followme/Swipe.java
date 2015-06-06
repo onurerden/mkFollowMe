@@ -80,7 +80,7 @@ public class Swipe extends Activity {
 
     public void logGonder(View view) {
         tvLogSonucu.setText("");
-        tvLogSonucu.setText(SendLog.getInstance().send(mNumberPicker.getValue(), etLogVerisi.getText().toString()) + "");
+        tvLogSonucu.setText(SendLog.getInstance().logla(mNumberPicker.getValue(), etLogVerisi.getText().toString()) + "");
         etLogVerisi.setText("");
     }
 }

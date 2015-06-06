@@ -20,7 +20,7 @@
         android:text="DURUM - PASİF"
         android:textAlignment="center"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textSize="14pt"
+        android:textSize="12pt"
         android:textStyle="bold" />
 
 
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/tvStatus"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="40dp"
         android:text="KONUM BİLGİSİ:"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#000000" />
@@ -47,7 +47,7 @@
     <RadioGroup
         android:id="@+id/rgRadioGroup"
         android:layout_width="wrap_content"
-        android:layout_height="120dp"
+        android:layout_height="90dp"
         android:layout_below="@+id/tvGPSPozisyon"
         android:layout_centerHorizontal="true"
         android:backgroundTintMode="add"
@@ -59,7 +59,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/rgRadioGroup"
-            android:layout_marginTop="17dp"
             android:layout_toLeftOf="@+id/tvGPSPozisyon"
             android:layout_toStartOf="@+id/tvGPSPozisyon"
             android:checked="false"
@@ -81,6 +80,26 @@
     </RadioGroup>
 
 
+    <TextView
+        android:id="@+id/tvSayac"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rgRadioGroup"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="SAYAC / GİDEN VERİ"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/tvRota"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvSayac"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="----"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
     <Switch
         android:id="@+id/_swAktivasyon"
         android:layout_width="wrap_content"
@@ -94,64 +113,67 @@
         android:enabled="true"
         android:onClick="setListFooter"
         android:text="KONUM"
-        android:textSize="24dp" />
+        android:textSize="24sp" />
 
-    <TextView
-        android:id="@+id/tvSayac"
+    <LinearLayout
+        android:id="@+id/mLinearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/rgRadioGroup"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="SAYAC / GİDEN VERİ"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
-
-    <TextView
-        android:id="@+id/tvdogruluk"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="Doğruluk"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
-
-    <Space
-        android:id="@+id/spaceHiz"
-        android:layout_width="200dp"
-        android:layout_height="100dp"
         android:layout_below="@+id/_swAktivasyon"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp" />
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <Button
+            android:id="@+id/btnMinus"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
+            android:longClickable="true"
+            android:text="-"
+            android:textSize="26sp" />
+
+        <TextView
+            android:id="@+id/tvPeriod"
+            android:layout_width="70sp"
+            android:layout_height="50sp"
+            android:gravity="center"
+            android:textSize="26sp" />
+
+        <Button
+            android:id="@+id/btnPlus"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
+            android:longClickable="true"
+            android:text="+"
+            android:textSize="26sp" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tvHiz"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/spaceHiz"
+        android:layout_alignParentStart="false"
+        android:layout_below="@+id/mLinearLayout"
         android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:autoText="false"
+        android:gravity="center"
         android:text="0"
-        android:textAlignment="center"
         android:textSize="90dp" />
 
     <TextView
-        android:id="@+id/tvmsn"
+        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/spaceHiz"
-        android:layout_alignBottom="@+id/spaceHiz"
-        android:layout_alignEnd="@id/spaceHiz"
+        android:layout_alignBottom="@+id/tvHiz"
         android:layout_alignParentEnd="false"
         android:layout_alignParentStart="false"
+        android:layout_alignRight="@+id/tvHiz"
+        android:layout_gravity="center_vertical"
+        android:gravity="left"
         android:text="m/sn"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
-
-    <TextView
-        android:id="@+id/tvRota"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvSayac"
-        android:layout_centerHorizontal="true"
-        android:text="----"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
@@ -159,8 +181,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/tvdogruluk"
-        android:layout_centerHorizontal="true"
+        android:layout_alignEnd="@+id/tvRota"
+        android:layout_gravity="center_horizontal"
         android:text="---"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/tvdogruluk"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:text="Doğruluk"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
 </RelativeLayout>

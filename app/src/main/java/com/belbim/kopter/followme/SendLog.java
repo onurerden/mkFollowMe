@@ -7,9 +7,6 @@ public class SendLog {
     private static SendLog instance = null;
     LogMessage mLogMessage = new LogMessage();
 
-    private SendLog() {
-    }
-
     public static synchronized SendLog getInstance() {
         if (instance == null) {
             instance = new SendLog();
@@ -17,7 +14,7 @@ public class SendLog {
         return instance;
     }
 
-    public int send(int logLevel, String logMessage) {
+    public int logla(int logLevel, String logMessage) {
         int result = -1;
         try {
             this.mLogMessage.setDeviceId(InitInfo.getInstance().getMkSession().getDeviceId());
@@ -32,4 +29,6 @@ public class SendLog {
         }
         return result;
     }
+
+
 }

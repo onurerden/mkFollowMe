@@ -65,7 +65,7 @@
                 android:layout_below="@+id/tvlbl"
                 android:layout_centerHorizontal="true"
                 android:layout_column="1"
-                android:text="Wifi Kapalı"
+                android:text="Wifi Durum"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <ImageView
@@ -91,7 +91,7 @@
                 android:layout_below="@+id/tvWifi"
                 android:layout_centerHorizontal="true"
                 android:layout_column="1"
-                android:text="Mobil Ağ Açık"
+                android:text="Mobil Ağ"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <ImageView
@@ -116,7 +116,7 @@
                 android:layout_below="@+id/tvMobilAg"
                 android:layout_centerHorizontal="true"
                 android:layout_column="1"
-                android:text="Mobil Ağ Bağlantısı Var"
+                android:text="Mobil Ağ Bağlantı Durumu"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <ImageView
@@ -141,7 +141,7 @@
                 android:layout_below="@+id/tvMobilAgBaglanti"
                 android:layout_centerHorizontal="true"
                 android:layout_column="1"
-                android:text="3G Tercih Edilmiş"
+                android:text="3G Tercihi"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <ImageView

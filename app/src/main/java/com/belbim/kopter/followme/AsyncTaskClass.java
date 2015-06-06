@@ -31,7 +31,7 @@ public class AsyncTaskClass extends AsyncTask<String, String, String> {
 
             return send;
         } catch (Exception e) {
-            //SendLog.getInstance().send(1, "AsyncTask Hatası (doInBackGround):"+ e.getMessage().toString());
+            SendLog.getInstance().logla(1, "AsyncTask Hatası (doInBackGround):" + e.getMessage().toString());
             e.printStackTrace();
             return null;
         }

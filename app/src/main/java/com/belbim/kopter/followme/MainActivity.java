@@ -11,7 +11,9 @@ import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RadioGroup;
@@ -31,6 +33,10 @@ public class MainActivity extends ActionBarActivity {
     TextView _tvHiz;
     TextView tvRota;
     TextView tvSure;
+    Button btnMinus;
+    TextView tvPeriod;
+    Button btnPlus;
+
     Switch swAktivasyon;
     RadioGroup _rgParametre;
     TextView _dogruluk;
@@ -39,17 +45,19 @@ public class MainActivity extends ActionBarActivity {
     int gidenVeriSayisi = 0;
     int hataliVeriSayisi = 0;
     int routeId = 0;
-    int gonderimdurumu = -1;
+    int gonderimDurumu = -1;
+    int gonderimSuresi = 0;
+
     Intent intentGPSTracker;
     Intent intentKulak;
     Intent intentBroadCast;
-    int sure = 0;
 
     FileOutputStream outputStream;
     SharedPrefBilgisi sp;
     GPSTracker gps;
     IDeviceServerImpl ids;
     Handler mHandler = new Handler();
+    Handler periodGuncellemeHandler = new Handler();
     Konus konusucu;
     FollowMe fm;
     JSONProvider<FollowMe> jsp;
@@ -95,6 +103,12 @@ public class MainActivity extends ActionBarActivity {
         _dogruluk = (TextView) findViewById(R.id.tvdogruluk);
         _tvHiz = (TextView) findViewById(R.id.tvHiz);
         tvRota = (TextView) findViewById(R.id.tvRota);
+        btnMinus = (Button) findViewById(R.id.btnMinus);
+        btnPlus = (Button) findViewById(R.id.btnPlus);
+        tvPeriod = (TextView) findViewById(R.id.tvPeriod);
+
+        btnMinus.setOnTouchListener(listenerPeriodGuncelle);
+        btnPlus.setOnTouchListener(listenerPeriodGuncelle);
 
         _rgParametre.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -118,15 +132,15 @@ public class MainActivity extends ActionBarActivity {
                             switch (routeId) {
                                 case 0:
                                     tvRota.setText("Async Task Hatası");
-                                    SendLog.getInstance().send(1, "Rota Alınamıyor, Değer:" + routeId);
+                                    SendLog.getInstance().logla(1, "Rota Alınamıyor, Değer:" + routeId);
                                     break;
                                 case -1:
                                     tvRota.setText("DB Erişim Hatası");
-                                    SendLog.getInstance().send(1, "DB Erişim Hatası, Değer:" + routeId);
+                                    SendLog.getInstance().logla(1, "DB Erişim Hatası, Değer:" + routeId);
                                     break;
                                 case -2:
                                     tvRota.setText("Cihaz ID si yanlış:" + sp.cihazIdGetir());
-                                    SendLog.getInstance().send(1, "Cihaz ID Yanlış, Değer:" + routeId);
+                                    SendLog.getInstance().logla(1, "Cihaz ID Yanlış, Değer:" + routeId);
                                     break;
                                 default:
                                     tvRota.setText("ROTA:" + routeId);
@@ -158,7 +172,7 @@ public class MainActivity extends ActionBarActivity {
                             tvRota.setText("Rota Sonlandırıldı");
                         } else {
                             tvRota.setText("Rota Sonlandırmada Hata!");
-                            SendLog.getInstance().send(1, "Rota sonlandirmada hata, RotaID:" + routeId);
+                            SendLog.getInstance().logla(1, "Rota sonlandirmada hata, RotaID:" + routeId);
                         }
                     }
 /*
@@ -188,6 +202,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onResume() {
         super.onResume();
         sp.populate();
+        tvPeriod.setText("" + (double) sp.guncellemePeriyoduGetir() / 1000);
 
         //eger kullanıcı adı yok ise Init acalım ve kullanıcı adı oluşturalım
         if (sp.kullaniciAdiGetir().isEmpty()) {
@@ -239,6 +254,20 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
+    private void sureInit() {
+        gonderimSuresi = 0;
+        gonderimDurumu = 1;
+        while (gonderimDurumu == 1) {
+            gonderimSuresi++;
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        tvSure.setText("Gönderim Süresi:" + gonderimSuresi);
+    }
+
     private Runnable mUpdateTimeTask = new Runnable() {
         public void run() {
 
@@ -279,15 +308,12 @@ public class MainActivity extends ActionBarActivity {
                             fm.setRouteId(routeId);
                             fm.setSessionId(InitInfo.getInstance().getMkSession().getSessionId());
 
-                            Thread mThread = new Thread() {
-                                @Override
-                                public void run() {
-                                    say();
-                                }
-                            };
-                            gonderimdurumu = ids.sendFollowMeData(jsp.entityToJson(fm));
+                            sureInit();
 
-                            switch (gonderimdurumu) {
+                            gonderimDurumu = ids.sendFollowMeData(jsp.entityToJson(fm));
+
+
+                            switch (gonderimDurumu) {
                                 case 0:
                                     _tvStatus.setTextColor(Color.parseColor("#FF00AAFF"));
                                     _tvStatus.setText("VERİ GÖNDERİLİYOR");
@@ -297,7 +323,7 @@ public class MainActivity extends ActionBarActivity {
                                 case -1:
                                     _tvStatus.setTextColor(Color.parseColor("#FF0000"));
                                     _tvStatus.setText("DB Erişim Hatası");
-                                    SendLog.getInstance().send(1, "Mesaj goderim durumu -1, DB Erisim Hatasi");
+                                    SendLog.getInstance().logla(1, "Mesaj goderim durumu -1, DB Erisim Hatasi");
                                     konusucu.trackCal(R.raw.warning);
                                     hataliVeriSayisi++;
                                     mHandler.postDelayed(this, sp.guncellemePeriyoduGetir());
@@ -305,7 +331,7 @@ public class MainActivity extends ActionBarActivity {
                                 case -2:
                                     _tvStatus.setTextColor(Color.parseColor("#FF0000"));
                                     _tvStatus.setText("Hatalı Veri!!!");
-                                    SendLog.getInstance().send(1, "Mesaj gonderim durumu -2, Hatali Veri");
+                                    SendLog.getInstance().logla(1, "Mesaj gonderim durumu -2, Hatali Veri");
                                     konusucu.trackCal(R.raw.warning);
                                     hataliVeriSayisi++;
                                     mHandler.postDelayed(this, sp.guncellemePeriyoduGetir());
@@ -313,19 +339,13 @@ public class MainActivity extends ActionBarActivity {
                                 case -3:
                                     _tvStatus.setTextColor(Color.parseColor("#FF0000"));
                                     _tvStatus.setText("Async Task Hatası!");
-                                    SendLog.getInstance().send(1, "Mesaj gonderim durumu -3, Async Task Exception");
+                                    SendLog.getInstance().logla(1, "Mesaj gonderim durumu -3, Async Task Exception");
                                     konusucu.trackCal(R.raw.warning);
                                     hataliVeriSayisi++;
                                     mHandler.postDelayed(this, sp.guncellemePeriyoduGetir());
                                     break;
                             }
-                            tvSure.setText("Süre:" + sure);
-                            say_sifirla();
-/*
-                                }
-                            };
 
-*/
                             /*DOSYAYA YAZAN BÖLÜM
                             try {
                                 String yazilacakMetin = gps.locationGetir().getTime() + ":" + gps.locationGetir().getLatitude() + ":" + gps.locationGetir().getLongitude() + ":" + gps.locationGetir().getAltitude() + "\r\n";
@@ -342,7 +362,7 @@ public class MainActivity extends ActionBarActivity {
                         } else {
                             _tvStatus.setVisibility(View.VISIBLE);
                             _tvStatus.setText("Yeterli GPS Hassasiyeti Bekleniyor!");
-                            SendLog.getInstance().send(2, "GPS Dogrulugu dusuk:" + gps.location.getAccuracy());
+                            SendLog.getInstance().logla(2, "GPS Dogrulugu dusuk:" + gps.location.getAccuracy());
                             konusucu.trackCal(R.raw.warning);
                             mHandler.postDelayed(this, sp.guncellemePeriyoduGetir());
                         }
@@ -365,22 +385,48 @@ public class MainActivity extends ActionBarActivity {
         back_pressed = System.currentTimeMillis();
     }
 
-    private void say() {
-        while (true) {
-            sure++;
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+
+    View.OnTouchListener listenerPeriodGuncelle = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    switch (v.getId()) {
+                        case R.id.btnPlus:
+                            periodGuncellemeHandler.post(periodArtir);
+                            break;
+                        case R.id.btnMinus:
+                            periodGuncellemeHandler.post(periodAzalt);
+                            break;
+                    }
+                    break;
+                case MotionEvent.ACTION_UP:
+                    periodGuncellemeHandler.removeCallbacks(periodArtir);
+                    periodGuncellemeHandler.removeCallbacks(periodAzalt);
+                    break;
             }
+            return false;
         }
-    }
+    };
 
-    private void say_sifirla() {
-        sure = 0;
-    }
+    Runnable periodAzalt = new Runnable() {
+        @Override
+        public void run() {
+            if (sp.guncellemePeriyoduGetir() - 100 > 500)
+                sp.guncellemePeriyoduGuncelle(sp.guncellemePeriyoduGetir() - 100);
+            periodGuncellemeHandler.postDelayed(periodAzalt, 200);
+            tvPeriod.setText("" + (double) sp.guncellemePeriyoduGetir() / 1000);
+        }
+    };
 
-
+    Runnable periodArtir = new Runnable() {
+        @Override
+        public void run() {
+            sp.guncellemePeriyoduGuncelle(sp.guncellemePeriyoduGetir() + 100);
+            periodGuncellemeHandler.postDelayed(periodArtir, 200);
+            tvPeriod.setText("" + (double) sp.guncellemePeriyoduGetir() / 1000);
+        }
+    };
 
 
 }
