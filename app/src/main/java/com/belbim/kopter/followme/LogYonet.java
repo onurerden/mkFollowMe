@@ -17,10 +17,19 @@ public class LogYonet {
     }
 
     public int[] logGonder() {
+        int[] result;
+        if (diziLogMessage.size() == 0) {
+            result = new int[1];
+        } else {
+            result = new int[diziLogMessage.size()];
+        }
+
+        result[0] = 0;
         int diziBoyutu = diziLogMessage.size();
-        int[] result = new int[diziLogMessage.size()];
+
         JSONProvider<LogMessage> jsp = new JSONProvider<>();
         IDeviceServerImpl ids = new IDeviceServerImpl();
+
         for (int i = 1; i < diziBoyutu; i++) {
             try {
                 result[i] = ids.sendLog(jsp.entityToJson(diziLogMessage.get(i)));

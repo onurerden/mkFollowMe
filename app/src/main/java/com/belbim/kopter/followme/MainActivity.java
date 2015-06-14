@@ -285,10 +285,58 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        if (back_pressed + 2000 > System.currentTimeMillis()) super.onBackPressed();
+        if (back_pressed + 2000 > System.currentTimeMillis()) {
+            Toast.makeText(getBaseContext(), "Loglar Gönderiliyor!!!", Toast.LENGTH_SHORT).show();
+            int[] logSonucu = LogYonet.getInstance().logGonder();
+            if (logSonucu[0] != 254) {
+                Alarm logSonucuGoster = new Alarm("Log Gonderim Başarılı", "Tüm loglar Gönderildi", "", "OK :)", "");
+                logSonucuGoster.showAlarm(this);
+            } else {
+                Alarm logSonucuGoster = new Alarm("Log Gonderim Hatalı", "Bazı loglar gönderilemedi", "", "OK :(", "");
+                logSonucuGoster.showAlarm(this);
+            }
+            super.onBackPressed();
+        }
         else
             Toast.makeText(getBaseContext(), "Çıkmak için tekrar dokunun!", Toast.LENGTH_SHORT).show();
         back_pressed = System.currentTimeMillis();
+    }
+
+    public class FollowMeDataSentUpdateReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+
+            switch (intent.getIntExtra("gonderimDurumu", -2)) {
+                case 0:
+                    _tvStatus.setText("VERİ GÖNDERİLİYOR");
+                    gidenVeriSayisi++;
+
+                    break;
+                case -1:
+                    _tvStatus.setTextColor(Color.parseColor("#FF0000"));
+                    _tvStatus.setText("DB Erişim Hatası");
+                    LogYonet.getInstance().logKaydet(1, "Mesaj goderim durumu -1, DB Erisim Hatasi");
+                    konusucu.trackCal(R.raw.warning);
+                    hataliVeriSayisi++;
+                    break;
+                case -2:
+                    _tvStatus.setTextColor(Color.parseColor("#FF0000"));
+                    _tvStatus.setText("Hatalı Veri!!!");
+                    LogYonet.getInstance().logKaydet(1, "Mesaj gonderim durumu -2, Hatali Veri");
+                    konusucu.trackCal(R.raw.warning);
+                    hataliVeriSayisi++;
+                    break;
+                case -3:
+                    _tvStatus.setTextColor(Color.parseColor("#FF0000"));
+                    _tvStatus.setText("Async Task Hatası!");
+                    LogYonet.getInstance().logKaydet(1, "Mesaj gonderim durumu -3, Async Task Exception");
+                    konusucu.trackCal(R.raw.warning);
+                    hataliVeriSayisi++;
+
+                    break;
+            }
+        }
     }
 
     private Runnable mUpdateTimeTask = new Runnable() {
@@ -366,42 +414,7 @@ public class MainActivity extends ActionBarActivity {
         }
     };
 
-    public class FollowMeDataSentUpdateReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
 
-
-            switch (intent.getIntExtra("gonderimDurumu", -2)) {
-                case 0:
-                    _tvStatus.setText("VERİ GÖNDERİLİYOR");
-                    gidenVeriSayisi++;
-
-                    break;
-                case -1:
-                    _tvStatus.setTextColor(Color.parseColor("#FF0000"));
-                    _tvStatus.setText("DB Erişim Hatası");
-                    LogYonet.getInstance().logKaydet(1, "Mesaj goderim durumu -1, DB Erisim Hatasi");
-                    konusucu.trackCal(R.raw.warning);
-                    hataliVeriSayisi++;
-                    break;
-                case -2:
-                    _tvStatus.setTextColor(Color.parseColor("#FF0000"));
-                    _tvStatus.setText("Hatalı Veri!!!");
-                    LogYonet.getInstance().logKaydet(1, "Mesaj gonderim durumu -2, Hatali Veri");
-                    konusucu.trackCal(R.raw.warning);
-                    hataliVeriSayisi++;
-                    break;
-                case -3:
-                    _tvStatus.setTextColor(Color.parseColor("#FF0000"));
-                    _tvStatus.setText("Async Task Hatası!");
-                    LogYonet.getInstance().logKaydet(1, "Mesaj gonderim durumu -3, Async Task Exception");
-                    konusucu.trackCal(R.raw.warning);
-                    hataliVeriSayisi++;
-
-                    break;
-            }
-        }
-    }
 
 
 
