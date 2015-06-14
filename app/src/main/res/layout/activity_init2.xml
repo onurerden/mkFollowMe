@@ -1,6 +1,4 @@
-
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/parametreAyarLayout"
     android:layout_width="wrap_content"
@@ -21,7 +19,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btnLogKaydet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvLabel"
@@ -46,7 +44,7 @@
 
         <TableRow
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
+            android:layout_height="fill_parent">
 
             <ImageView
                 android:id="@+id/imageView"
@@ -82,7 +80,7 @@
 
         <TableRow
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
+            android:layout_height="fill_parent">
 
             <TextView
                 android:id="@+id/tvMobilAg"
@@ -107,7 +105,7 @@
 
         <TableRow
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
+            android:layout_height="fill_parent">
 
             <TextView
                 android:id="@+id/tvMobilAgBaglanti"
@@ -132,7 +130,7 @@
 
         <TableRow
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
+            android:layout_height="fill_parent">
 
             <TextView
                 android:id="@+id/tvMobileEdgeOr3G"

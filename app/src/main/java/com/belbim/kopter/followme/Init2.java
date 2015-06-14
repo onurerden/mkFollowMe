@@ -51,7 +51,7 @@ public class Init2 extends Activity {
         pb.setMax(7);
 
         mJSP = new JSONProvider<>();
-        button = (Button) findViewById(R.id.button);
+        button = (Button) findViewById(R.id.btnLogKaydet);
         button.setVisibility(View.INVISIBLE);
         sp.cihazIdYaz(-1);
         ids = new IDeviceServerImpl();
@@ -72,14 +72,6 @@ public class Init2 extends Activity {
         mGUIUpdateReceiver = new GUIUpdateReceiver();
     }
 
-    View.OnTouchListener mOnTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            mHandler.postDelayed(mRun, 500);
-            return true;
-        }
-    };
-
     protected void onPause() {
         super.onPause();
         tvLabel.setVisibility(View.VISIBLE);
@@ -88,9 +80,17 @@ public class Init2 extends Activity {
 
     }
 
+    View.OnTouchListener mOnTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            mHandler.postDelayed(mRun, 500);
+            return true;
+        }
+    };
+
     protected void onResume() {
         super.onResume();
-        registerReceiver(mGUIUpdateReceiver, new IntentFilter("com.belbim.kopter.followme.intent.action.deneme"));
+        registerReceiver(mGUIUpdateReceiver, new IntentFilter("com.belbim.kopter.followme.intent.action.GUIUpdate"));
         tvLabel.setVisibility(View.INVISIBLE);
         button.setVisibility(View.INVISIBLE);
         pb.setProgress(0);
@@ -194,7 +194,7 @@ public class Init2 extends Activity {
                                 MKSession mMKSession = new MKSession();
                                 mMKSession.setDeviceId(-4);  //aşağıdaki switch case e değişken gondermek için -4 diye set ettim.
                                 InitInfo.getInstance().setMkSession(mMKSession);
-                                SendLog.getInstance().logla(1, "Touch Serverdan gelen JSON  Sessiona dönüşmedi" + serverDokunus);
+                                LogYonet.getInstance().logKaydet(1, "Touch Serverdan gelen JSON  Sessiona dönüşmedi" + serverDokunus);
                                 Log.e("TouchServer Hatasi", "Touch Serverdan gelen JSON  Sessiona dönüşmedi" + serverDokunus);
                             }
 
@@ -284,10 +284,12 @@ public class Init2 extends Activity {
         }
     }
 
+
+
     Runnable mRun = new Runnable() {
         @Override
         public void run() {
-            GUIUpdateIntent = new Intent("com.belbim.kopter.followme.intent.action.deneme");
+            GUIUpdateIntent = new Intent("com.belbim.kopter.followme.intent.action.GUIUpdate");
             GUIUpdateIntent.putExtra("Progress", "01");
             sendBroadcast(GUIUpdateIntent);
             mHandler.postDelayed(mRun, 10000);

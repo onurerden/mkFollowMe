@@ -170,7 +170,6 @@ public class IDeviceServerImpl extends HttpConnectionProvider implements IDevice
         }
     }
 
-
     @Override
     public String getFollowMeData(int deviceId) {
         return null;

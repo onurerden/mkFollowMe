@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
 
 /**
  * Created by eakbiyik on 6.5.2015.
@@ -18,11 +17,6 @@ public class Kulak extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context mContext, Intent intent) {
-        //Toast.makeText(mContext, "BroadCast Receiver Event Aldı", Toast.LENGTH_SHORT).show();
-        Log.i("KulakServisi", "BroadCast Receiver Event Aldı");
-//        System.out.println("Bilgi :"+ intent.getAction().toString());
-        // System.out.println("Bilgi: "+ intent.getStringExtra("1"));
-        //System.out.println("Bilgi: "+ intent.getStringExtra("2"));
 
         ConnectivityManager cnnMgr = (ConnectivityManager) mContext.getSystemService(mContext.CONNECTIVITY_SERVICE);
 
@@ -38,13 +32,7 @@ public class Kulak extends BroadcastReceiver {
             InitInfo.getInstance().setInited(false);
         }
         InitInfo.getInstance().setWifiConnected(wifiInfo.isConnected());
-
-        Intent GUIUpdateIntent = new Intent("com.belbim.kopter.followme.intent.action.deneme");
-        GUIUpdateIntent.putExtra("Progress", "01");
-        mContext.sendBroadcast(GUIUpdateIntent);
-
-
     }
-}
+    }
 
 

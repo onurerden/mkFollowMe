@@ -23,30 +23,44 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/imageView1" />
 
+    <EditText
+        android:id="@+id/etLogSonucu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etLogVerisi"
+        android:layout_centerHorizontal="true"
+        android:ems="10"
+        android:gravity="center"
+        android:inputType="number"
+        android:text="2" />
+
     <TextView
         android:id="@+id/tvLogSonucu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/etLogVerisi"
+        android:layout_below="@+id/etLogSonucu"
+        android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <NumberPicker
-        android:id="@+id/numberPicker"
+    <Button
+        android:id="@+id/btnLogKaydet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvLogSonucu"
         android:layout_centerHorizontal="true"
-        android:orientation="vertical" />
+        android:onClick="logKaydet"
+        android:text="LOG KAYDET" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btnSonucGoster"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/numberPicker"
+        android:layout_below="@+id/btnLogKaydet"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="30sp"
         android:onClick="logGonder"
-        android:text="LOG GÖNDER" />
+        android:text="GÖNDER" />
 
 </RelativeLayout>

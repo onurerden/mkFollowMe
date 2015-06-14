@@ -4,14 +4,15 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class Swipe extends Activity {
 
+    Button btnLogKaydet;
     ImageView m_ivImage;
     float m_lastTouchX, m_dx, m_posX, m_prevX;
     int imageWidth;
@@ -58,7 +59,7 @@ public class Swipe extends Activity {
     };
     EditText etLogVerisi;
     TextView tvLogSonucu;
-    NumberPicker mNumberPicker;
+    EditText etLogSonucu;
     Konus konusucu;
 
     @Override
@@ -73,14 +74,25 @@ public class Swipe extends Activity {
         konusucu = new Konus(getApplicationContext());
         etLogVerisi = (EditText) findViewById(R.id.etLogVerisi);
         tvLogSonucu = (TextView) findViewById(R.id.tvLogSonucu);
-        mNumberPicker = (NumberPicker) findViewById(R.id.numberPicker);
+        etLogSonucu = (EditText) findViewById(R.id.etLogSonucu);
+        btnLogKaydet = (Button) findViewById(R.id.btnLogKaydet);
 
 
     }
 
-    public void logGonder(View view) {
+    public void logKaydet(View view) {
         tvLogSonucu.setText("");
-        tvLogSonucu.setText(SendLog.getInstance().logla(mNumberPicker.getValue(), etLogVerisi.getText().toString()) + "");
+        int logSayisi = LogYonet.getInstance().logKaydet(Integer.parseInt(etLogSonucu.getText().toString()), etLogVerisi.getText().toString());
         etLogVerisi.setText("");
+        btnLogKaydet.setText("LOG KAYDET (" + logSayisi + ")");
+    }
+
+    public void logGonder(View v) {
+        tvLogSonucu.setText("");
+        int[] iLogSonucu = LogYonet.getInstance().logGonder();
+        for (int i = 0; i < iLogSonucu.length; i++) {
+            tvLogSonucu.setText(tvLogSonucu.getText() + "," + iLogSonucu[i]);
+            btnLogKaydet.setText("LOG KAYDET (" + LogYonet.getInstance().diziLogMessage.size() + ")");
+        }
     }
 }

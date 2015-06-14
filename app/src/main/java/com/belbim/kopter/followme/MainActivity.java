@@ -1,6 +1,8 @@
 
 package com.belbim.kopter.followme;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -27,6 +29,7 @@ import java.io.FileOutputStream;
 public class MainActivity extends ActionBarActivity {
 
     private static long back_pressed;
+    public FollowMeDataSentUpdateReceiver mFollowMeDataSentUpdateReceiver;
     TextView _tvGPSPozisyon;
     TextView _tvStatus;
     TextView _tvSayac;
@@ -46,7 +49,6 @@ public class MainActivity extends ActionBarActivity {
     int hataliVeriSayisi = 0;
     int routeId = 0;
     int gonderimDurumu = -1;
-    int gonderimSuresi = 0;
 
     Intent intentGPSTracker;
     Intent intentKulak;
@@ -60,6 +62,15 @@ public class MainActivity extends ActionBarActivity {
     Handler periodGuncellemeHandler = new Handler();
     Konus konusucu;
     FollowMe fm;
+    Runnable followMeGonder = new Runnable() {
+        @Override
+        public void run() {
+            gonderimDurumu = ids.sendFollowMeData(jsp.entityToJson(fm));
+            Intent followMeSend = new Intent("com.belbim.kopter.followme.intent.action.FollowMeSent");
+            followMeSend.putExtra("gonderimDurumu", gonderimDurumu);
+            sendBroadcast(followMeSend);
+        }
+    };
     JSONProvider<FollowMe> jsp;
     Kulak mKulak;
 
@@ -73,24 +84,26 @@ public class MainActivity extends ActionBarActivity {
         ids = new IDeviceServerImpl();
         konusucu = new Konus(getApplicationContext());
 
-    }
-
-    protected void onStart() {
-        super.onStart();
-
         intentGPSTracker = new Intent(this, GPSTracker.class);
         this.startService(intentGPSTracker);
 
         intentBroadCast = new Intent(this, Kulak.class);
         this.startService(intentBroadCast);
 
+        mFollowMeDataSentUpdateReceiver = new FollowMeDataSentUpdateReceiver();
+    }
+
+    protected void onStart() {
+        super.onStart();
+
         mKulak = new Kulak(getApplicationContext(), intentKulak);
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         intentFilter.addAction("android.net.wifi.WIFI_STATE_CHANGED");
         intentFilter.addAction("android.location.PROVIDERS_CHANGED");
-        registerReceiver(mKulak, intentFilter);
 
+        registerReceiver(mKulak, intentFilter);
+        registerReceiver(mFollowMeDataSentUpdateReceiver, new IntentFilter("com.belbim.kopter.followme.intent.action.FollowMeSent"));
         gps = new GPSTracker(this);
 
         /////////////////////////GUI nin tanımlanması////////////////
@@ -132,15 +145,15 @@ public class MainActivity extends ActionBarActivity {
                             switch (routeId) {
                                 case 0:
                                     tvRota.setText("Async Task Hatası");
-                                    SendLog.getInstance().logla(1, "Rota Alınamıyor, Değer:" + routeId);
+                                    LogYonet.getInstance().logKaydet(1, "Rota Alınamıyor, Değer:" + routeId);
                                     break;
                                 case -1:
                                     tvRota.setText("DB Erişim Hatası");
-                                    SendLog.getInstance().logla(1, "DB Erişim Hatası, Değer:" + routeId);
+                                    LogYonet.getInstance().logKaydet(1, "DB Erişim Hatası, Değer:" + routeId);
                                     break;
                                 case -2:
                                     tvRota.setText("Cihaz ID si yanlış:" + sp.cihazIdGetir());
-                                    SendLog.getInstance().logla(1, "Cihaz ID Yanlış, Değer:" + routeId);
+                                    LogYonet.getInstance().logKaydet(1, "Cihaz ID Yanlış, Değer:" + routeId);
                                     break;
                                 default:
                                     tvRota.setText("ROTA:" + routeId);
@@ -172,7 +185,7 @@ public class MainActivity extends ActionBarActivity {
                             tvRota.setText("Rota Sonlandırıldı");
                         } else {
                             tvRota.setText("Rota Sonlandırmada Hata!");
-                            SendLog.getInstance().logla(1, "Rota sonlandirmada hata, RotaID:" + routeId);
+                            LogYonet.getInstance().logKaydet(1, "Rota sonlandirmada hata, RotaID:" + routeId);
                         }
                     }
 /*
@@ -249,23 +262,13 @@ public class MainActivity extends ActionBarActivity {
         super.onStop();
         gps.durdur();
         unregisterReceiver(mKulak);
-        this.stopService(intentGPSTracker);
-        this.stopService(intentBroadCast);
-
     }
 
-    private void sureInit() {
-        gonderimSuresi = 0;
-        gonderimDurumu = 1;
-        while (gonderimDurumu == 1) {
-            gonderimSuresi++;
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        tvSure.setText("Gönderim Süresi:" + gonderimSuresi);
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        this.stopService(intentGPSTracker);
+        this.stopService(intentBroadCast);
     }
 
     private Runnable mUpdateTimeTask = new Runnable() {
@@ -308,43 +311,8 @@ public class MainActivity extends ActionBarActivity {
                             fm.setRouteId(routeId);
                             fm.setSessionId(InitInfo.getInstance().getMkSession().getSessionId());
 
-                            sureInit();
-
-                            gonderimDurumu = ids.sendFollowMeData(jsp.entityToJson(fm));
-
-
-                            switch (gonderimDurumu) {
-                                case 0:
-                                    _tvStatus.setTextColor(Color.parseColor("#FF00AAFF"));
-                                    _tvStatus.setText("VERİ GÖNDERİLİYOR");
-                                    gidenVeriSayisi++;
-                                    mHandler.postDelayed(this, sp.guncellemePeriyoduGetir());
-                                    break;
-                                case -1:
-                                    _tvStatus.setTextColor(Color.parseColor("#FF0000"));
-                                    _tvStatus.setText("DB Erişim Hatası");
-                                    SendLog.getInstance().logla(1, "Mesaj goderim durumu -1, DB Erisim Hatasi");
-                                    konusucu.trackCal(R.raw.warning);
-                                    hataliVeriSayisi++;
-                                    mHandler.postDelayed(this, sp.guncellemePeriyoduGetir());
-                                    break;
-                                case -2:
-                                    _tvStatus.setTextColor(Color.parseColor("#FF0000"));
-                                    _tvStatus.setText("Hatalı Veri!!!");
-                                    SendLog.getInstance().logla(1, "Mesaj gonderim durumu -2, Hatali Veri");
-                                    konusucu.trackCal(R.raw.warning);
-                                    hataliVeriSayisi++;
-                                    mHandler.postDelayed(this, sp.guncellemePeriyoduGetir());
-                                    break;
-                                case -3:
-                                    _tvStatus.setTextColor(Color.parseColor("#FF0000"));
-                                    _tvStatus.setText("Async Task Hatası!");
-                                    SendLog.getInstance().logla(1, "Mesaj gonderim durumu -3, Async Task Exception");
-                                    konusucu.trackCal(R.raw.warning);
-                                    hataliVeriSayisi++;
-                                    mHandler.postDelayed(this, sp.guncellemePeriyoduGetir());
-                                    break;
-                            }
+                            FireAndForgetExecutor FFE = new FireAndForgetExecutor();
+                            FFE.exec(followMeGonder);
 
                             /*DOSYAYA YAZAN BÖLÜM
                             try {
@@ -358,11 +326,12 @@ public class MainActivity extends ActionBarActivity {
                             _tvHiz.setText(String.format("%.1f", gps.location.getSpeed()));
                             _tvGPSPozisyon.setText(String.format("%.6f", gps.location.getLatitude()) + " | " + String.format("%.6f", gps.location.getLongitude()));
                             _tvStatus.setVisibility(View.VISIBLE);
+                            mHandler.postDelayed(this, sp.guncellemePeriyoduGetir());
 
                         } else {
                             _tvStatus.setVisibility(View.VISIBLE);
                             _tvStatus.setText("Yeterli GPS Hassasiyeti Bekleniyor!");
-                            SendLog.getInstance().logla(2, "GPS Dogrulugu dusuk:" + gps.location.getAccuracy());
+                            LogYonet.getInstance().logKaydet(2, "GPS Dogrulugu dusuk:" + gps.location.getAccuracy());
                             konusucu.trackCal(R.raw.warning);
                             mHandler.postDelayed(this, sp.guncellemePeriyoduGetir());
                         }
@@ -385,6 +354,42 @@ public class MainActivity extends ActionBarActivity {
         back_pressed = System.currentTimeMillis();
     }
 
+    public class FollowMeDataSentUpdateReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+
+            switch (intent.getIntExtra("gonderimDurumu", -2)) {
+                case 0:
+                    _tvStatus.setText("VERİ GÖNDERİLİYOR");
+                    gidenVeriSayisi++;
+
+                    break;
+                case -1:
+                    _tvStatus.setTextColor(Color.parseColor("#FF0000"));
+                    _tvStatus.setText("DB Erişim Hatası");
+                    LogYonet.getInstance().logKaydet(1, "Mesaj goderim durumu -1, DB Erisim Hatasi");
+                    konusucu.trackCal(R.raw.warning);
+                    hataliVeriSayisi++;
+                    break;
+                case -2:
+                    _tvStatus.setTextColor(Color.parseColor("#FF0000"));
+                    _tvStatus.setText("Hatalı Veri!!!");
+                    LogYonet.getInstance().logKaydet(1, "Mesaj gonderim durumu -2, Hatali Veri");
+                    konusucu.trackCal(R.raw.warning);
+                    hataliVeriSayisi++;
+                    break;
+                case -3:
+                    _tvStatus.setTextColor(Color.parseColor("#FF0000"));
+                    _tvStatus.setText("Async Task Hatası!");
+                    LogYonet.getInstance().logKaydet(1, "Mesaj gonderim durumu -3, Async Task Exception");
+                    konusucu.trackCal(R.raw.warning);
+                    hataliVeriSayisi++;
+
+                    break;
+            }
+        }
+    }
 
     View.OnTouchListener listenerPeriodGuncelle = new View.OnTouchListener() {
         @Override
@@ -412,9 +417,9 @@ public class MainActivity extends ActionBarActivity {
     Runnable periodAzalt = new Runnable() {
         @Override
         public void run() {
-            if (sp.guncellemePeriyoduGetir() - 100 > 500)
+            if (sp.guncellemePeriyoduGetir() - 100 > 400)
                 sp.guncellemePeriyoduGuncelle(sp.guncellemePeriyoduGetir() - 100);
-            periodGuncellemeHandler.postDelayed(periodAzalt, 200);
+            periodGuncellemeHandler.postDelayed(periodAzalt, 100);
             tvPeriod.setText("" + (double) sp.guncellemePeriyoduGetir() / 1000);
         }
     };
@@ -423,10 +428,11 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public void run() {
             sp.guncellemePeriyoduGuncelle(sp.guncellemePeriyoduGetir() + 100);
-            periodGuncellemeHandler.postDelayed(periodArtir, 200);
+            periodGuncellemeHandler.postDelayed(periodArtir, 100);
             tvPeriod.setText("" + (double) sp.guncellemePeriyoduGetir() / 1000);
         }
     };
 
 
+    ;
 }

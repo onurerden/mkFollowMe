@@ -52,6 +52,7 @@ public abstract class HttpConnectionProvider {
             return null;
         }
     }
+
     public String send(String json) {
         connect();
 
@@ -71,7 +72,6 @@ public abstract class HttpConnectionProvider {
             return null;
         }
     }
-
 
     public String getWebServiceUrl() {
         return WebServiceUrl;
