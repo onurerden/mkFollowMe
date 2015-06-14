@@ -10,5 +10,6 @@
     <string name="title_activity_init2">Bağlantı Hazırlıkları</string>
     <string name="title_activity_swipe">Deneme Alanı</string>
     <string name="action_swipe">Development</string>
+    <string name="action_loggonder">Log Gönder</string>
 
 </resources>

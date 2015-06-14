@@ -17,24 +17,21 @@ public class LogYonet {
     }
 
     public int[] logGonder() {
+        int diziBoyutu = diziLogMessage.size();
         int[] result = new int[diziLogMessage.size()];
         JSONProvider<LogMessage> jsp = new JSONProvider<>();
         IDeviceServerImpl ids = new IDeviceServerImpl();
-        for (int i = 0; i < diziLogMessage.size(); i++) {
+        for (int i = 1; i < diziBoyutu; i++) {
             try {
                 result[i] = ids.sendLog(jsp.entityToJson(diziLogMessage.get(i)));
+                if (result[i] == 0) {
+                    LogYonet.getInstance().diziLogMessage.remove(i);
+                } else result[0] = 254;
             } catch (Exception ex) {
                 result[i] = -2;
-            }
-            System.out.println(result[i]);
-        }
-
-        for (int i = 0; i < diziLogMessage.size(); i++) {
-            if (result[i] == 0) {
-                LogYonet.getInstance().diziLogMessage.remove(i);
+                result[0] = 254;
             }
         }
-
         return result;
     }
 

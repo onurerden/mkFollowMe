@@ -254,6 +254,18 @@ public class MainActivity extends ActionBarActivity {
             startActivity(tetik);
             return true;
         }
+
+        if (id == R.id.action_logGonder) {
+            int[] logSonucu = LogYonet.getInstance().logGonder();
+            if (logSonucu[0] != 254) {
+                Alarm logSonucuGoster = new Alarm("Log Gonderim Başarılı", "Tüm loglar Gönderildi", "", "OK :)", "");
+                logSonucuGoster.showAlarm(this);
+            } else {
+                Alarm logSonucuGoster = new Alarm("Log Gonderim Hatalı", "Bazı loglar gönderilemedi", "", "OK :(", "");
+                logSonucuGoster.showAlarm(this);
+            }
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -269,6 +281,14 @@ public class MainActivity extends ActionBarActivity {
         super.onDestroy();
         this.stopService(intentGPSTracker);
         this.stopService(intentBroadCast);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (back_pressed + 2000 > System.currentTimeMillis()) super.onBackPressed();
+        else
+            Toast.makeText(getBaseContext(), "Çıkmak için tekrar dokunun!", Toast.LENGTH_SHORT).show();
+        back_pressed = System.currentTimeMillis();
     }
 
     private Runnable mUpdateTimeTask = new Runnable() {
@@ -346,14 +366,6 @@ public class MainActivity extends ActionBarActivity {
         }
     };
 
-    @Override
-    public void onBackPressed() {
-        if (back_pressed + 2000 > System.currentTimeMillis()) super.onBackPressed();
-        else
-            Toast.makeText(getBaseContext(), "Çıkmak için tekrar dokunun!", Toast.LENGTH_SHORT).show();
-        back_pressed = System.currentTimeMillis();
-    }
-
     public class FollowMeDataSentUpdateReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -390,6 +402,8 @@ public class MainActivity extends ActionBarActivity {
             }
         }
     }
+
+
 
     View.OnTouchListener listenerPeriodGuncelle = new View.OnTouchListener() {
         @Override
