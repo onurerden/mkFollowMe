@@ -52,7 +52,7 @@ public class ParametreAyar extends Activity {
 
     public void kaydet(View view) {
         sp.serverUrlYaz(_etServerURL.getText().toString());
-        if (Integer.parseInt(_etGuncellemePeriyodu.getText().toString()) > 499 && Integer.parseInt(etAccuarcy.getText().toString()) > 0 && Integer.parseInt(etGPSPeriod.getText().toString()) > 99 && etKullaniciAdi.getText().length() > 5 && _etCihazId.getText().length() > 0) {
+        if (Integer.parseInt(_etGuncellemePeriyodu.getText().toString()) > 9 && Integer.parseInt(etAccuarcy.getText().toString()) > 0 && Integer.parseInt(etGPSPeriod.getText().toString()) > 99 && etKullaniciAdi.getText().length() > 5 && _etCihazId.getText().length() > 0) {
             sp.guncellemePeriyoduYaz(Integer.parseInt(_etGuncellemePeriyodu.getText().toString()));
             sp.cihazIdYaz(Integer.parseInt(_etCihazId.getText().toString()));
             sp.accuarcyYaz((Integer.parseInt(etAccuarcy.getText().toString())));

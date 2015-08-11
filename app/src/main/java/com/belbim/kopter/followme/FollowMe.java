@@ -6,6 +6,7 @@ import java.sql.Timestamp;
  * Created by eakbiyik on 29.12.2014.
  */
 public class FollowMe {
+    int sessionId = -1;
     private Double lat = 0.0;
     private Double lng = 0.0;
     private int bearing = 0;
@@ -14,12 +15,13 @@ public class FollowMe {
     private int event=0;
     private int followMeDeviceId;
     private int routeId;
-    int sessionId = -1;
-
+    private double speed = 0.0;
+    private double altitude = 0.0;
 
     public int getRouteId(){
         return routeId;
     }
+
 
     public void setRouteId(int routeId){
         this.routeId=routeId;
@@ -28,6 +30,7 @@ public class FollowMe {
     public Double getLat() {
         return lat;
     }
+
 
     public void setLat(Double lat) {
         this.lat = lat;
@@ -74,4 +77,20 @@ public class FollowMe {
     public int getSessionId() {return this.sessionId;}
 
     public void setSessionId(int id) {this.sessionId = id;}
+
+    public double getAltitude() {
+        return altitude;
+    }
+
+    public void setAltitude(double altitude) {
+        this.altitude = altitude;
+    }
+
+    public double getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(double speed) {
+        this.speed = speed;
+    }
 }

@@ -377,6 +377,9 @@ public class MainActivity extends ActionBarActivity {
                             fm.setLng(gps.locationGetir().getLongitude());
                             fm.setFollowMeDeviceId(sp.cihazIdGetir());
                             fm.setRouteId(routeId);
+                            fm.setSpeed(gps.locationGetir().getSpeed());
+                            fm.setAltitude(gps.locationGetir().getAltitude());
+
                             fm.setSessionId(InitInfo.getInstance().getMkSession().getSessionId());
 
                             FireAndForgetExecutor FFE = new FireAndForgetExecutor();
