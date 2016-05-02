@@ -14,7 +14,7 @@ public  class OperationConfig {
     }
 
     public static enum JsonActionList {
-        touchServer("/mkWS/TouchServer"),
+       /* touchServer("/mkWS/TouchServer"),
         registerDevice("/mkWS/RegisterDevice"),
         sendStatus("/mkWS/SendStatus"),
         getTask("/mkWS/getTask"),
@@ -24,6 +24,18 @@ public  class OperationConfig {
         getRouteId("mkWS/getRouteId"),
         sendLog("mkWS/SendLog"),
         endRoute("mkWS/EndRoute");
+        */
+
+        touchServer("/TouchServer"),
+        registerDevice("/RegisterDevice"),
+        sendStatus("/SendStatus"),
+        getTask("/getTask"),
+        sendFollowMeData("/SendFollowMeData"),
+        getKopterStatus("/GetKopterStatus"),
+        getRegisteredData("/GetRegisteredData"),
+        getRouteId("/getRouteId"),
+        sendLog("/SendLog"),
+        endRoute("/EndRoute");
 
         private final String text;
 
